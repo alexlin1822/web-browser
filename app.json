@@ -25,6 +25,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "permissions": [
+      "WEB_BROWSE",
+      "APP_SLEEP"
+    ]
   }
 }
