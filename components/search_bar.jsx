@@ -12,14 +12,12 @@ export default function SearchBar({ onSubmit, updateURL}) {
     setCurURL(updateURL);
   }
 
+  //* handleSearch function
   const handleSearch = () => {
     let tmp=addHttps(text)
     setText(tmp);
-    console.log(tmp);
     setCurURL(tmp);
-
     onSubmit(tmp);
-
   };
 
   function addHttps(input) {
