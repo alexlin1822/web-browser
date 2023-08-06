@@ -1,35 +1,39 @@
 import { View, Text, StyleSheet } from "react-native";
 import ResourceCard from "../components/resource_card";
-import customIcon from "../assets/custom-add.png";
 
 const directory = [
   {
     title: "Google",
-    icon: "https://www.google.com/favicon.ico",
+    // icon: "https://www.google.com/favicon.ico",
+    icon: "https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png",
     url: "https://www.google.com",
     description: "Popular search engine",
   },
   {
     title: "Youtube",
-    icon: "https://www.youtube.com/favicon.ico",
+    icon: "https://www.facebook.com/favicon.ico",
+    // icon: "https://github.com/alexlin1822/web-browser/blob/main/assets/custom-add.png",
     url: "https://www.youtube.com",
     description: "Video sharing platform",
   },
   {
     title: "Facebook",
-    icon: "https://www.facebook.com/favicon.ico",
+    // icon: "https://www.facebook.com/favicon.ico",
+    icon: "https://github.com/alexlin1822/web-browser/blob/main/assets/custom-add.png",
     url: "https://www.facebook.com",
     description: "Social media site",
   },
   {
     title: "Stack Overflow",
-    icon: "https://stackoverflow.com/favicon.ico",
+    // icon: "https://stackoverflow.com/favicon.ico",
+    icon: "https://github.com/alexlin1822/web-browser/blob/main/assets/custom-add.png",
     url: "https://stackoverflow.com/",
     description: "Q&A for programmers",
   },
   {
     title: "Custom / Add Resource",
-    icon: "https://github.com/alexlin1822/web-browser/tree/main/assets/custom-add.png",
+    icon: "https://github.com/alexlin1822/web-browser/blob/main/assets/custom-add.png",
+    // icon: "https://stackoverflow.com/favicon.ico",
     url: "about:blank",
     description: "Custom / Add Resource",
   },
@@ -53,10 +57,13 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
     padding: 20,
   },
   card: {
     backgroundColor: "white",
+    width: "50%",
     padding: 20,
     borderRadius: 10,
     shadowColor: "black",
@@ -64,6 +71,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
-    marginBottom: 20,
+    margin: 20,
   },
 });
