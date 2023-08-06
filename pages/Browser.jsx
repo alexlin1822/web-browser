@@ -49,15 +49,13 @@ export default function Browser() {
    */
   const handleUrlChange = (newUrl) => {
     setUrl(newUrl["url"]);
+    console.log(`New URL = ${newUrl}`);
+    console.log(newUrl);
   };
 
   return (
     <View style={styles.container}>
-      <SearchBar
-        onSubmit={handleSubmit}
-        updateURL={url}
-        // isNeedUpdate={needUpdate}
-      />
+      <SearchBar onSubmit={handleSubmit} updateURL={url} />
       <Button title="Save" onPress={saveData} />
       <Button title="Load" onPress={loadData} />
       <WebView
