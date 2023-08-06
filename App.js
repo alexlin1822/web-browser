@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 
 export default function App() {
   // return <Browser />;
-  //return <Signup />;
+  // return <Signup />;
   // return <Login />;
   return <Home />;
 }
