@@ -8,11 +8,12 @@ export default function Signup() {
   const [text_username, setUserName] = useState("");
   const [text_email, setEmail] = useState("");
   const [text_password, setPassword] = useState("");
+  const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
 
   let rid = "1";
 
-  console.log(Constants.expoConfig.extra.apiUrl);
-  console.log(Constants.expoConfig.extra.apiKey);
+  // console.log(Constants.expoConfig.extra.apiUrl);
+  // console.log(Constants.expoConfig.extra.apiKey);
 
   /**
    * @description This function generates a random string as user ID
@@ -26,59 +27,111 @@ export default function Signup() {
    * @description This function is called when the user submits the Sign Up form
    *
    */
-  const saveUserData = async () => {
-    const userData = {
-      rid: generateId(),
-      nickname: text_nickname,
-      username: text_username,
-      password: text_password,
-      email: text_email,
-    };
-  };
+  // const saveUserData = async () => {
+  //   const userData = {
+  //     rid: generateId(),
+  //     nickname: text_nickname,
+  //     username: text_username,
+  //     password: text_password,
+  //     email: text_email,
+  //   };
+  // };
 
-  const saveDefalutData = async () => {
-    const userSetting = {
-      rid: rid,
-      editView: true,
-    };
+  // const saveDefalutData = async () => {
+  //   const userSetting = {
+  //     rid: rid,
+  //     editView: true,
+  //   };
 
-    const userData = {
-      rid: rid,
-      editView: true,
-      title: title,
-      favicon: favicon,
-      defualt_page: url,
-    };
+  //   const userData = {
+  //     rid: rid,
+  //     editView: true,
+  //     title: title,
+  //     favicon: favicon,
+  //     defualt_page: url,
+  //   };
 
-    console.log(`Save data`);
+  //   console.log(`Save data`);
 
-    //const obj = JSON.parse('{"name":"John", "age":30, "city":"New York"}');
-    //const myJSON = JSON.stringify(obj);
+  //const obj = JSON.parse('{"name":"John", "age":30, "city":"New York"}');
+  //const myJSON = JSON.stringify(obj);
 
-    try {
-      await AsyncStorage.setItem("@M:userSetting", "I like to save it.");
-      console.log(`Save data inside`);
-    } catch (error) {
-      // Error saving data
+  //   try {
+  //     await AsyncStorage.setItem("@M:userSetting", "I like to save it.");
+  //     console.log(`Save data inside`);
+  //   } catch (error) {
+  //     // Error saving data
+  //   }
+  // };
+
+  // const loadData = async () => {
+  //   console.log(`Load data`);
+  //   try {
+  //     const value = await AsyncStorage.getItem("@MyApp:key");
+  //     console.log(`Load data inside`);
+  //     if (value !== null) {
+  //       // We have data!!
+  //       console.log(`Value = ${value}`);
+  //     }
+  //   } catch (error) {
+  //     // Error retrieving data
+  //   }
+  // };
+
+  /**
+   * @description This function is called when the user submits the Sign Up form
+   */
+  const handleSignup = async () => {
+    // Check if the user has entered all the required fields
+    if (
+      text_nickname === "" ||
+      text_username === "" ||
+      text_email === "" ||
+      text_password === ""
+    ) {
+      alert("Please fill in all the fields");
+      return;
     }
-  };
 
-  const loadData = async () => {
-    console.log(`Load data`);
+    // Check if the user has entered a valid email address
+    if (!text_email.includes("@")) {
+      alert("Please enter a valid email address");
+      return;
+    }
+
+    // Check if the user has entered a valid password
+    if (text_password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+
     try {
-      const value = await AsyncStorage.getItem("@MyApp:key");
-      console.log(`Load data inside`);
+      console.log("@KidWebBrowser:AccountNums");
+
+      const value = await AsyncStorage.getItem("@KidWebBrowser:AccountNums");
+
       if (value !== null) {
-        // We have data!!
-        console.log(`Value = ${value}`);
+        setAccountNums(parseInt(value) + 1);
+      } else {
+        setAccountNums(0);
       }
     } catch (error) {
-      // Error retrieving data
+      // No account found
+      setAccountNums(0);
     }
-  };
 
-  const handleSignup = () => {
-    // Call API to register account
+    // Save the user data in AsyncStorage
+    try {
+      console.log(`Save data inside`);
+      const result = await AsyncStorage.setItem(
+        "@KidWebBrowser:AccountNums",
+        accountNums.toString()
+      );
+      console.log(result);
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
   };
 
   return (
