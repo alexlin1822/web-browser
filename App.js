@@ -1,74 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
 
-import { GlobalStateProvider } from "./GlobalStateContext";
+import { LoadAccountData, GetInfo } from "./utility/Common";
 import Browser from "./pages/Browser";
 import Signup from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 
 export default function App() {
-  const [isReady, setIsReady] = useState(false); //For loading app
   const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
+  const [appIsReady, setAppIsReady] = useState(false);
 
   /**
    * Load app settings before render
    */
-  const loadAppSettings = async () => {
-    // try {
-    //   console.log(`Save data inside`);
-    //   const result = await AsyncStorage.setItem(
-    //     "@KidWebBrowser:AccountNums",
-    //     "0"
-    //   );
-    //   console.log(result);
-    // } catch (error) {
-    //   // Error saving data
-    //   console.log(error);
-    // }
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Pre-load fonts, make any API calls you need to do here
+        // await Font.loadAsync(Entypo.font);
+        // Artificially delay for two seconds to simulate a slow loading
+        // experience. Please remove this if you copy and paste the code!
 
-    console.log(`Loading data`);
+        // Load account data
+        LoadAccountData;
 
-    try {
-      console.log("@KidWebBrowser:AccountNums");
-
-      const value = await AsyncStorage.getItem("@KidWebBrowser:AccountNums");
-
-      if (value !== null) {
-        setAccountNums(parseInt(value));
-      } else {
-        setAccountNums(0);
+        // Get the number of existing accounts
+        setAccountNums(parseInt(await GetInfo("accountNums")));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
       }
-    } catch (error) {
-      // No account found
-      setAccountNums(0);
     }
-  };
 
-  if (!isReady) {
-    console.log(`Got account number.`);
-    return (
-      <AppLoading
-        startAsync={loadAppSettings}
-        onFinish={() => setIsReady(true)}
-        onError={(error) => console.error("Error loading app:", error)}
-      />
-    );
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
   }
 
   //If there is an account, show the Login page, else show the Signup page
   if (accountNums > 0) {
-    return (
-      <GlobalStateProvider>
-        <Login />
-      </GlobalStateProvider>
-    );
+    return <Login />;
   } else {
-    return (
-      <GlobalStateProvider>
-        <Signup />
-      </GlobalStateProvider>
-    );
+    return <Signup />;
   }
 }
