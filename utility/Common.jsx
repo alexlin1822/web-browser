@@ -1,7 +1,22 @@
 /**
  * Common functions for all pages and components
  * Global variables for all pages and components
+ * Save and load data in AsyncStorage
+ *
+ * @module utility/Common
+ * @requires react
+ * @requires react-native
+ * @requires @react-native-async-storage/async-storage
+ * @exports GetInfo
+ * @exports SetInfo
+ * @exports LoadAccountData
+ * @exports LoadCurrentData
+ * @exports SaveAccountData
+ * @exports SaveCurrentData
+ *
  */
+import React, { useState } from "react";
+import CryptoJS from "crypto-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /* Global variables */
@@ -14,6 +29,15 @@ let currentAccountID = "";
 let currentUserData = "";
 
 /* Common functions for all pages and components*/
+
+// export function encrypt(text) {
+//   const [encrypted, setEncrypted] = useState("");
+
+//   const handleEncrypt = () => {
+//     const encrypted = CryptoJS.AES.encrypt(text, "secret key 123");
+//     setEncrypted(encrypted.toString());
+//   };
+// }
 
 /**
  * Getters for global variables
@@ -142,4 +166,12 @@ async function SaveAccountData(currentID, currentData) {
     console.log(error);
     return false;
   }
+}
+
+/**
+ * @description This function generates a random string as user ID
+ * @returns {string} random string
+ */
+function generateId() {
+  return Math.random().toString(36).slice(2, 10);
 }

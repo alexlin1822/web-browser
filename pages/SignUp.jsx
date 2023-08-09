@@ -11,73 +11,8 @@ export default function Signup() {
   const [text_password, setPassword] = useState("");
   const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
 
-  let rid = "1";
-
-  // console.log(Constants.expoConfig.extra.apiUrl);
-  // console.log(Constants.expoConfig.extra.apiKey);
-
-  /**
-   * @description This function generates a random string as user ID
-   * @returns {string} random string
-   */
-  function generateId() {
-    return Math.random().toString(36).slice(2, 10);
-  }
-
-  /**
-   * @description This function is called when the user submits the Sign Up form
-   *
-   */
-  // const saveUserData = async () => {
-  //   const userData = {
-  //     rid: generateId(),
-  //     nickname: text_nickname,
-  //     username: text_username,
-  //     password: text_password,
-  //     email: text_email,
-  //   };
-  // };
-
-  // const saveDefalutData = async () => {
-  //   const userSetting = {
-  //     rid: rid,
-  //     editView: true,
-  //   };
-
-  //   const userData = {
-  //     rid: rid,
-  //     editView: true,
-  //     title: title,
-  //     favicon: favicon,
-  //     defualt_page: url,
-  //   };
-
-  //   console.log(`Save data`);
-
   //const obj = JSON.parse('{"name":"John", "age":30, "city":"New York"}');
   //const myJSON = JSON.stringify(obj);
-
-  //   try {
-  //     await AsyncStorage.setItem("@M:userSetting", "I like to save it.");
-  //     console.log(`Save data inside`);
-  //   } catch (error) {
-  //     // Error saving data
-  //   }
-  // };
-
-  // const loadData = async () => {
-  //   console.log(`Load data`);
-  //   try {
-  //     const value = await AsyncStorage.getItem("@MyApp:key");
-  //     console.log(`Load data inside`);
-  //     if (value !== null) {
-  //       // We have data!!
-  //       console.log(`Value = ${value}`);
-  //     }
-  //   } catch (error) {
-  //     // Error retrieving data
-  //   }
-  // };
 
   /**
    * @description This function is called when the user submits the Sign Up form

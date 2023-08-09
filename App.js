@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import AppLoading from "expo-app-loading";
 import * as SplashScreen from "expo-splash-screen";
 
 import { LoadAccountData, GetInfo } from "./utility/Common";
