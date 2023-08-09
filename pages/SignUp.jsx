@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
+import { GetInfo, SetInfo } from "../utility/Common";
 
 export default function Signup() {
   const [text_nickname, setNickName] = useState("");
@@ -105,6 +106,7 @@ export default function Signup() {
       return;
     }
 
+    // Load current account numbers in AsyncStorage
     try {
       console.log("@KidWebBrowser:AccountNums");
 
@@ -113,11 +115,12 @@ export default function Signup() {
       if (value !== null) {
         setAccountNums(parseInt(value) + 1);
       } else {
-        setAccountNums(0);
+        setAccountNums(1);
       }
     } catch (error) {
       // No account found
-      setAccountNums(0);
+      // setAccountNums(1);
+      console.log(error);
     }
 
     // Save the user data in AsyncStorage
