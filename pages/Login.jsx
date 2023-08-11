@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import {
-  LoadAccountData,
-  GetInfo,
-  setShowNavigationBar,
-  getShowNavigationBar,
-} from "../utility/Common";
+import { LoadAccountData, GetInfo } from "../utility/Common";
 
 export default function Login({ navigation }) {
   const [userName, setuserName] = useState("");
@@ -14,16 +9,17 @@ export default function Login({ navigation }) {
   const handleLogin = () => {
     // Simulating a login check (you should replace this with your actual authentication logic)
     if (userName === "" && password === "") {
-      setShowNavigationBar(false);
-      console.log(getShowNavigationBar());
-      navigation.navigate("Home");
+      // setShowNavigationBar(false);
+      // console.log(getShowNavigationBar());
+      navigation.navigate("UserProfile");
+      // navigation.navigate("Home");
     } else {
       alert("Invalid credentials. Please try again.");
     }
   };
 
   const handleSignUp = () => {
-    setShowNavigationBar(true);
+    // setShowNavigationBar(true);
     navigation.navigate("SignUp");
   };
 

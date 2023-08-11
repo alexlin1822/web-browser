@@ -23,15 +23,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // App settings
 const appName = "@KidWebBrowser";
 
-const [showNavigationBar, set_ShowNavigationBar] = useState(true);
+// const [showNavigationBar, set_ShowNavigationBar] = useState(true);
 // let showNavigationBar = true;
 
 // Account data
-let accountNums = "0";
-let accountList = "";
+let accountList = ""; // all accounts information. include: username, password, email, nickname (For local version)
 
-let currentAccountID = "";
-let currentUserData = "";
+let currentAccountID = ""; // Current account ID
+let currentAccountData = ""; // Current account family member list and settings
+let currentMemberData = ""; // Current member resource list and settings  (list of URL, title, description, icon, memo, status)
 
 /* Common functions for all pages and components*/
 
@@ -44,8 +44,8 @@ let currentUserData = "";
 //   };
 // }
 
-export function createNewUserData() {
-  let newUserData = [
+export function createNewMemberData(memberID) {
+  currentMemberData = [
     {
       id: "0",
       title: "Add Resource",
@@ -92,13 +92,13 @@ export function getUserID(username, password) {
   return userID;
 }
 
-export function getShowNavigationBar() {
-  return showNavigationBar;
-}
+// export function getShowNavigationBar() {
+//   return showNavigationBar;
+// }
 
-export function setShowNavigationBar(value) {
-  set_ShowNavigationBar(value);
-}
+// export function setShowNavigationBar(value) {
+//   set_ShowNavigationBar(value);
+// }
 
 /**
  * Getters for global variables
@@ -107,10 +107,7 @@ export function setShowNavigationBar(value) {
  */
 export function GetInfo(keyname) {
   console.log("GetInfo: " + keyname);
-  if (keyname === "accountNums") {
-    console.log("accountNums: " + accountNums);
-    return accountNums;
-  } else if (keyname === "accountList") {
+  if (keyname === "accountList") {
     console.log("accountList: " + accountList);
     return accountList;
   } else if (keyname === "currentAccountID") {
@@ -131,9 +128,7 @@ export function GetInfo(keyname) {
  * */
 export function SetInfo(keyname, content) {
   console.log("SetInfo: " + keyname + " " + content);
-  if (keyname === "accountNums") {
-    accountNums = content;
-  } else if (keyname === "accountList") {
+  if (keyname === "accountList") {
     accountList = content;
   } else if (keyname === "currentAccountID") {
     currentAccountID = content;
@@ -157,18 +152,15 @@ export async function LoadAccountData() {
   try {
     console.log("LoadAccountData");
 
-    const value = await AsyncStorage.getItem(`${appName}:accountNums`);
+    const accountValue = await AsyncStorage.getItem(`${appName}:accountList`);
 
-    if (value !== null && value !== "0") {
-      accountNums = value;
-      const accountValue = await AsyncStorage.getItem(`${appName}:accountList`);
+    if (value !== null) {
+      accountList = value;
     } else {
-      accountNums = "0";
       accountList = "";
     }
     return true;
   } catch (error) {
-    accountNums = "0";
     accountList = "";
     console.log(error);
     return false;

@@ -5,7 +5,7 @@ import { WebView } from "react-native-webview";
 import SearchBar from "../components/search_bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Browser() {
+export default function Browser({ navigation }) {
   const [url, setUrl] = useState("https://www.google.com/");
 
   const saveData = async () => {
