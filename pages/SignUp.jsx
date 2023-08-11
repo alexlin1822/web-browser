@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { GetInfo, SetInfo } from "../utility/Common";
 
-export default function Signup() {
+export default function Signup({ navigation }) {
   const [text_nickname, setNickName] = useState("");
   const [text_username, setUserName] = useState("");
   const [text_email, setEmail] = useState("");

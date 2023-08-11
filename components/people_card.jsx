@@ -8,14 +8,17 @@ import {
   Image,
 } from "react-native";
 
-export default function ResourceCard({ title, icon, url, description }) {
+export default function PeopleCard({ mid, title, icon, description }) {
+  // const [memberID, setMemberID] = useState("");
+
+  // setMemberID(mid);
+
   return (
     <View style={styles.card}>
       <TouchableOpacity style={styles.button}>
         <Image source={{ uri: icon }} style={styles.image} />
         <Text style={styles.text}>{title}</Text>
-        <Text>{url}</Text>
-        <Text>{description}</Text>
+        <Text style={{ color: "blue" }}>{description}</Text>
       </TouchableOpacity>
     </View>
   );

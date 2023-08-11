@@ -8,11 +8,12 @@ import Browser from "./pages/Browser";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import UserProfile from "./pages/UserProfile";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
+  // const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
   const [appIsReady, setAppIsReady] = useState(false);
 
   /**
@@ -61,7 +62,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerShown: getShowNavigationBar,
+          // headerShown: getShowNavigationBar,
+          headerShown: false,
           gestureEnabled: false,
         }} //Hide or show the header
         initialRouteName="Login"
@@ -70,6 +72,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Browser" component={Browser} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -39,7 +39,7 @@ const directory = [
   },
 ];
 
-export default function App() {
+export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       {directory.map((item) => (
