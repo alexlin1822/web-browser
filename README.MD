@@ -29,30 +29,33 @@ Share button to share the resources to others users.
 Browser view just allow whitelist resource and show meno. If not allow page. it will go back to default page.
 Edit view has url bar and whitelist edit (add, edit delete whitelist and meno)
 
+## Procedure
+
+![](assets/20230810_135448_KidWebBrowser.png)
+
 ## Data Structre
 
-    const userProfile = {
-      rid: generateId(),
-      nickname: text_nickname,
-      username: text_username,
-      password: text_password,
-      email: text_email,
-    };
+const userProfile = {
+rid: generateId(),
+nickname: text_nickname,
+username: text_username,
+password: text_password,
+email: text_email,
+};
 
-    const userSetting = {
-      rid: rid,
-      editView:true,
+const userSetting = {
+rid: rid,
+editView:true,
 
-    };
+};
 
-    const userData = {
-      rid: rid,
-      editView:true,
-      title:title,
-      favicon:favicon,
-      defualt_page:url,
-    };
-
+const userData = {
+rid: rid,
+editView:true,
+title:title,
+favicon:favicon,
+defualt_page:url,
+};
 Minyi:
 
 8/5/2023

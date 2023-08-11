@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import { LoadAccountData, GetInfo } from "./utility/Common";
+import { LoadAccountData, getShowNavigationBar } from "./utility/Common";
 import Browser from "./pages/Browser";
-import Signup from "./pages/SignUp";
+import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
@@ -26,7 +30,7 @@ export default function App() {
         LoadAccountData;
 
         // Get the number of existing accounts
-        setAccountNums(parseInt(await GetInfo("accountNums")));
+        // setAccountNums(parseInt(await GetInfo("accountNums")));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -53,10 +57,20 @@ export default function App() {
     return null;
   }
 
-  //If there is an account, show the Login page, else show the Signup page
-  if (accountNums > 0) {
-    return <Login />;
-  } else {
-    return <Signup />;
-  }
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: getShowNavigationBar,
+          gestureEnabled: false,
+        }} //Hide or show the header
+        initialRouteName="Login"
+      >
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Browser" component={Browser} />
+        <Stack.Screen name="Home" component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

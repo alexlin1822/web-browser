@@ -20,8 +20,13 @@ import CryptoJS from "crypto-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /* Global variables */
+// App settings
 const appName = "@KidWebBrowser";
 
+const [showNavigationBar, set_ShowNavigationBar] = useState(true);
+// let showNavigationBar = true;
+
+// Account data
 let accountNums = "0";
 let accountList = "";
 
@@ -38,6 +43,62 @@ let currentUserData = "";
 //     setEncrypted(encrypted.toString());
 //   };
 // }
+
+export function createNewUserData() {
+  let newUserData = [
+    {
+      id: "0",
+      title: "Add Resource",
+      url: "https://www.google.com",
+      description: "Add Resource",
+      icon: "https://www.google.com/favicon.ico",
+      memo: "",
+      status: "0",
+    },
+    {
+      id: "1",
+      title: "Copy Resource",
+      url: "about:blank",
+      description: "Copy Resource another family member",
+      icon: "https://www.google.com/favicon.ico",
+      memo: "",
+      status: "0",
+    },
+  ];
+}
+
+/**
+ * Get user id by username and password
+ * @param {*} username :string
+ * @param {*} password :string
+ * @returns : string
+ */
+export function getUserID(username, password) {
+  if (currentUserData === "") {
+    return "";
+  }
+
+  let dictCurrentUserData = JSON.parse(currentUserData);
+  let userID = "aa";
+  for (let i = 0; i < dictCurrentUserData.length; i++) {
+    if (
+      dictCurrentUserData[i].username === username &&
+      dictCurrentUserData[i].password === password
+    ) {
+      userID = dictCurrentUserData[i].id;
+      break;
+    }
+  }
+  return userID;
+}
+
+export function getShowNavigationBar() {
+  return showNavigationBar;
+}
+
+export function setShowNavigationBar(value) {
+  set_ShowNavigationBar(value);
+}
 
 /**
  * Getters for global variables
@@ -175,3 +236,24 @@ async function SaveAccountData(currentID, currentData) {
 function generateId() {
   return Math.random().toString(36).slice(2, 10);
 }
+
+// const userProfile = {
+//   rid: generateId(),
+//   nickname: text_nickname,
+//   username: text_username,
+//   password: text_password,
+//   email: text_email,
+// };
+
+// const userSetting = {
+//   rid: rid,
+//   editView: true,
+// };
+
+// const userData = {
+//   rid: rid,
+//   editView: true,
+//   title: title,
+//   favicon: favicon,
+//   defualt_page: url,
+// };
