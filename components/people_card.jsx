@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    margin: 20,
   },
   card: {
     backgroundColor: "white",
@@ -44,8 +45,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    width: 32,
-    height: 32,
+    width: 64,
+    height: 64,
   },
   text: {
     fontWeight: "bold",

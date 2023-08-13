@@ -3,7 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { LoadAccountData, getShowNavigationBar } from "./utility/Common";
+// import { LoadAccountData, getShowNavigationBar } from "./utility/Common";
 import Browser from "./pages/Browser";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
@@ -26,10 +26,8 @@ export default function App() {
         // await Font.loadAsync(Entypo.font);
         // Artificially delay for two seconds to simulate a slow loading
         // experience. Please remove this if you copy and paste the code!
-
         // Load account data
-        LoadAccountData;
-
+        // LoadAccountData;
         // Get the number of existing accounts
         // setAccountNums(parseInt(await GetInfo("accountNums")));
       } catch (e) {
@@ -63,7 +61,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           // headerShown: getShowNavigationBar,
-          headerShown: false,
+          headerShown: true,
           gestureEnabled: false,
         }} //Hide or show the header
         initialRouteName="Login"

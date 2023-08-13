@@ -35,28 +35,77 @@ Edit view has url bar and whitelist edit (add, edit delete whitelist and meno)
 
 ## Data Structre
 
-const userProfile = {
-rid: generateId(),
+#### Account List object
+
+myAccountList = [
+{
+accountID: GenerateNewId("account"),
 nickname: text_nickname,
 username: text_username,
-password: text_password,
 email: text_email,
+password: text_password,
+},
+{....}
+];
+
+#### Account profile object
+
+myAccountProfile = {
+owner: "accountID",
+profile:{
+setting1: "aa",
+setting2: "bb",
+},
+memberlist:[
+{
+mid: "0",
+title: "Add Person",
+description: "Add your kid or family member",
+icon: "https://www.google.com/favicon.ico",
+memo: "",
+status: "0",
+},
+{
+mid: GenerateNewId("member"),
+title: "Ken",
+description: "Boy",
+icon: "https://www.google.com/favicon.ico",
+memo: "Son",
+status: "0",
+},
+{...}
+]
 };
 
-const userSetting = {
-rid: rid,
-editView:true,
+#### Resource profile object
 
+myResourceProfile = {
+owner: "memberID (mid)",
+resourcelist:[
+{
+rid: "0",
+title: "Add resource",
+description: "Add resource",
+default_url:""
+icon: "https://www.google.com/favicon.ico",
+memo: "",
+status: "0",
+url_filter:"",
+title_filter:"",
+whitelist:"",
+},
+{
+mid: GenerateNewId("resource"),
+title: "facebook",
+description: "facebook",
+defaulturl:"https://www.facebook.com"
+icon: "https://www.facebook.com/favicon.ico",
+memo: "",
+status: "0",
+url_filter:["facebook.com","www.faceook.com"], #the url must include "facebook.com" or "www.facebook.com"
+title_filter:["facebook","face"], #the title must include "facebook" or "face"
+whitelist:["www.facebook.com"], # Allow all url in this field.
+},
+{...}
+]
 };
-
-const userData = {
-rid: rid,
-editView:true,
-title:title,
-favicon:favicon,
-defualt_page:url,
-};
-Minyi:
-
-8/5/2023
-add components : search bar
