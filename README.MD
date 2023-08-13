@@ -32,7 +32,7 @@ Kid lock, full screen
 
 ![Alt text](KidWebBrowser.png)
 
-## Data Structre
+## Data Structure
 
 #### Account List object
 
