@@ -1,17 +1,24 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { LoadAccountData, GetInfo } from "../utility/Common";
+import { GetAccountID, SetCurrentID, GetCurrentID } from "../utility/Common";
 
 export default function Login({ navigation }) {
   const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Simulating a login check (you should replace this with your actual authentication logic)
-    if (userName === "" && password === "") {
+    let resultID = await GetAccountID(userName, password);
+    console.log("resultID: " + resultID);
+
+    if (resultID != "") {
+      SetCurrentID("currentAccountID", resultID);
+      console.log("currentAccountID: " + GetCurrentID("currentAccountID"));
+      navigation.navigate("UserProfile");
+
       // setShowNavigationBar(false);
       // console.log(getShowNavigationBar());
-      navigation.navigate("UserProfile");
+
       // navigation.navigate("Home");
     } else {
       alert("Invalid credentials. Please try again.");
@@ -19,8 +26,24 @@ export default function Login({ navigation }) {
   };
 
   const handleSignUp = () => {
-    // setShowNavigationBar(true);
     navigation.navigate("SignUp");
+
+    // test encryption
+    // let text = "Apple";
+    // let encryptedText = encryptString(text);
+    // console.log(encryptedText);
+    // console.log(decryptString(encryptedText));
+    // test GenerateNewId
+    // setShowNavigationBar(true);
+    // for (let i = 0; i < 5; i++) {
+    //   console.log(GenerateNewId("account"));
+    // }
+    // for (let i = 0; i < 5; i++) {
+    //   console.log(GenerateNewId("member"));
+    // }
+    // for (let i = 0; i < 5; i++) {
+    //   console.log(GenerateNewId("resource"));
+    // }
   };
 
   return (

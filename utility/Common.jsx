@@ -7,115 +7,216 @@
  * @requires react
  * @requires react-native
  * @requires @react-native-async-storage/async-storage
- * @exports GetInfo
- * @exports SetInfo
- * @exports LoadAccountData
- * @exports LoadCurrentData
- * @exports SaveAccountData
- * @exports SaveCurrentData
+
  *
  */
 import React, { useState } from "react";
 import CryptoJS from "crypto-js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { getRandomValues } from "react-native-get-random-values";
 
 /* Global variables */
 // App settings
 const appName = "@KidWebBrowser";
 
+// const userProfile = {
+//   rid: generateId(),
+//   nickname: text_nickname,
+//   username: text_username,
+//   password: text_password,
+//   email: text_email,
+// };
+
+// const userSetting = {
+//   rid: rid,
+//   editView: true,
+// };
+
+// const userData = {
+//   rid: rid,
+//   editView: true,
+//   title: title,
+//   favicon: favicon,
+//   defualt_page: url,
+// };
+
 // const [showNavigationBar, set_ShowNavigationBar] = useState(true);
 // let showNavigationBar = true;
 
 // Account data
-let accountList = ""; // all accounts information. include: username, password, email, nickname (For local version)
 
 let currentAccountID = ""; // Current account ID
-let currentAccountData = ""; // Current account family member list and settings
-let currentMemberData = ""; // Current member resource list and settings  (list of URL, title, description, icon, memo, status)
+let focusMemberID = ""; // focus member ID in current account ID
+let currentResourceID = ""; // Current Resource ID
+
+// let currentMemberList = ""; // Current member list in current account
+
+// resource list and settings of focus member
+//(list of URL, title, description, icon, memo, status, roles)
+//Current account family member list and settings
+// let focusMemberBrowseList = "";
 
 /* Common functions for all pages and components*/
 
-// export function encrypt(text) {
-//   const [encrypted, setEncrypted] = useState("");
+/** Save data to AsyncStorage
+ * @param {*} keyname : String
+ * @param {*} content : String
+ * @returns : Boolean
+ */
+export async function SaveData_local(keyname, content) {
+  console.log(`Saveing data....`);
+  // Save the user data in AsyncStorage
+  try {
+    return await AsyncStorage.setItem(keyname, content);
+  } catch (error) {
+    // Error saving data
+    console.log(error);
+    return false;
+  }
+}
 
-//   const handleEncrypt = () => {
-//     const encrypted = CryptoJS.AES.encrypt(text, "secret key 123");
-//     setEncrypted(encrypted.toString());
-//   };
-// }
+/** Load data from AsyncStorage
+ * @param {*} keyname : String
+ * @returns : Boolean
+ */
+export async function LoadData_local(keyname) {
+  // Load current account numbers and list in AsyncStorage
+  try {
+    console.log("Loading Data.....");
 
-export function createNewMemberData(memberID) {
-  currentMemberData = [
-    {
-      id: "0",
-      title: "Add Resource",
-      url: "https://www.google.com",
-      description: "Add Resource",
-      icon: "https://www.google.com/favicon.ico",
-      memo: "",
-      status: "0",
-    },
-    {
-      id: "1",
-      title: "Copy Resource",
-      url: "about:blank",
-      description: "Copy Resource another family member",
-      icon: "https://www.google.com/favicon.ico",
-      memo: "",
-      status: "0",
-    },
-  ];
+    const value = await AsyncStorage.getItem(keyname);
+
+    if (value !== null) {
+      return value;
+    } else {
+      return "";
+    }
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
 }
 
 /**
- * Get user id by username and password
+ * Get Storage Key
+ * @param {*} accountID
+ * @param {*} memberID
+ * @param {*} resourceID
+ * @returns : string
+ */
+export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
+  if (accountID === "" && memberID === "" && resourceID === "") {
+    //In the remote version, the account list is stored in the server
+    return appName + ":" + "accountList"; // Acount List storage Key (just for local version)
+  } else if (accountID != "" && memberID === "" && resourceID === "") {
+    return appName + ":" + accountID; // Account storage data Key
+  } else if (accountID != "" && memberID != "" && resourceID === "") {
+    return appName + ":" + accountID + "-" + memberID; // Member data
+  } else if (accountID != "" && memberID != "" && resourceID != "") {
+    return appName + ":" + accountID + "-" + memberID + "-" + resourceID; // Resource data
+  } else {
+    return "";
+  }
+}
+
+/**
+ * check if the username or email is exist
+ * @param {*} username
+ * @param {*} email
+ * @returns
+ */
+export async function CheckUsernameisExist(username, email) {
+  //get account list
+  let accountList = await LoadData_local(GetStorageKey());
+
+  if (accountList === "") {
+    return "0";
+  }
+
+  let dictAccountList = JSON.parse(accountList);
+  for (let i = 0; i < dictAccountList.length; i++) {
+    if (dictAccountList[i].username === username) {
+      return 1;
+    } else if (dictAccountList[i].email === email) {
+      return 2;
+    }
+  }
+  return "0";
+}
+
+/**
+ * Get account id by username and password
  * @param {*} username :string
  * @param {*} password :string
  * @returns : string
  */
-export function getUserID(username, password) {
-  if (currentUserData === "") {
+export async function GetAccountID(username, password) {
+  //get account list
+  let accountList = await LoadData_local(GetStorageKey());
+
+  if (accountList === "") {
     return "";
   }
 
-  let dictCurrentUserData = JSON.parse(currentUserData);
-  let userID = "aa";
-  for (let i = 0; i < dictCurrentUserData.length; i++) {
+  let dictAccountList = JSON.parse(accountList);
+  let accountID = "";
+  for (let i = 0; i < dictAccountList.length; i++) {
     if (
-      dictCurrentUserData[i].username === username &&
-      dictCurrentUserData[i].password === password
+      dictAccountList[i].username === username &&
+      dictAccountList[i].password === password
     ) {
-      userID = dictCurrentUserData[i].id;
+      accountID = dictAccountList[i].accountID;
       break;
     }
   }
-  return userID;
+  return accountID;
 }
 
-// export function getShowNavigationBar() {
-//   return showNavigationBar;
-// }
-
-// export function setShowNavigationBar(value) {
-//   set_ShowNavigationBar(value);
-// }
+/**
+ * @description This function generates a random string as account / member ID
+ * @param {string} idType : [account , member, resource]
+ * @returns {string} random string
+ */
+export function GenerateNewId(idType) {
+  if (idType === "account") {
+    return (
+      Math.random().toString(36).slice(2, 11) +
+      "-a-" +
+      Math.random().toString(36).slice(2, 10)
+    );
+  } else if (idType === "member") {
+    return (
+      Math.random().toString(36).slice(2, 6) +
+      "-m-" +
+      Math.random().toString(36).slice(2, 4)
+    );
+  } else if (idType === "resource") {
+    return (
+      Math.random().toString(36).slice(2, 9) +
+      "-r-" +
+      Math.random().toString(36).slice(2, 6)
+    );
+  } else {
+    return "";
+  }
+}
 
 /**
  * Getters for global variables
  * @param {*} keyname : String
  * @returns : String
  */
-export function GetInfo(keyname) {
+export function GetCurrentID(keyname) {
   console.log("GetInfo: " + keyname);
-  if (keyname === "accountList") {
-    console.log("accountList: " + accountList);
-    return accountList;
-  } else if (keyname === "currentAccountID") {
+  if (keyname === "currentAccountID") {
     console.log("currentAccountID: " + currentAccountID);
     return currentAccountID;
-  } else if (keyname === "currentUserData") {
-    console.log("currentUserData: " + currentUserData);
-    return currentUserData;
+  } else if (keyname === "focusMemberID") {
+    console.log("focusMemberID: " + focusMemberID);
+    return focusMemberID;
+  } else if (keyname === "currentResourceID") {
+    console.log("currentResourceID: " + currentResourceID);
+    return currentResourceID;
   } else {
     return "";
   }
@@ -126,49 +227,20 @@ export function GetInfo(keyname) {
  * @param {*} content : String
  * @returns : Boolean
  * */
-export function SetInfo(keyname, content) {
+export function SetCurrentID(keyname, content) {
   console.log("SetInfo: " + keyname + " " + content);
-  if (keyname === "accountList") {
-    accountList = content;
-  } else if (keyname === "currentAccountID") {
+  if (keyname === "currentAccountID") {
     currentAccountID = content;
-  } else if (keyname === "currentUserData") {
-    currentUserData = content;
+  } else if (keyname === "focusMemberID") {
+    focusMemberID = content;
+  } else if (keyname === "currentResourceID") {
+    currentResourceID = content;
   } else {
-    return false;
-  }
-  SaveAccountData(keyname, content);
-  return true;
-}
-
-/** Load current account data in AsyncStorage
- *  Need to be called when the app starts
- * @param {*} currentID : String
- * @returns : Boolean
- *
- */
-export async function LoadAccountData() {
-  // Load current account numbers and list in AsyncStorage
-  try {
-    console.log("LoadAccountData");
-
-    const accountValue = await AsyncStorage.getItem(`${appName}:accountList`);
-
-    if (value !== null) {
-      accountList = value;
-    } else {
-      accountList = "";
-    }
-    return true;
-  } catch (error) {
-    accountList = "";
-    console.log(error);
     return false;
   }
 }
 
 /* internal functions  */
-
 /**
  * Load current account data in AsyncStorage
  * @param {*} currentID
@@ -200,52 +272,111 @@ async function LoadCurrentData(currentID) {
   }
 }
 
-/** Save current account data in AsyncStorage
- * @param {*} currentID : String
- * @param {*} currentData : String
- * @returns : Boolean
+/**
+ * initialize the new member list for a new account
+ * @returns : boolean
  */
-async function SaveAccountData(currentID, currentData) {
-  // Save the user data in AsyncStorage
-  try {
-    console.log(`Save data inside`);
-    const result = await AsyncStorage.setItem(
-      `${appName}:${currentID}`,
-      currentData
-    );
-    return true;
-  } catch (error) {
-    // Error saving data
-    console.log(error);
-    return false;
-  }
+function InitNewMemberList() {
+  result = false;
+
+  let keyname = appName + "_" + currentAccountID + "_memberList";
+  currentMemberList = [
+    {
+      mid: "0",
+      title: "Add Person",
+      description: "Add your kid or family member",
+      icon: "https://www.google.com/favicon.ico",
+      memo: "",
+      status: "0",
+    },
+  ];
+  let content = JSON.stringify(currentMemberData);
+  result = SaveAccountData(keyname, content);
+  return result;
 }
 
 /**
- * @description This function generates a random string as user ID
- * @returns {string} random string
+ * initialize the new browse list for a new member
+ * @returns : boolean
  */
-function generateId() {
-  return Math.random().toString(36).slice(2, 10);
+function InitNewBrowseList() {
+  result = false;
+  let keyname =
+    appName + "_" + currentAccountID + "_" + focusMemberID + "_BrowseList";
+  focusMemberBrowseList = [
+    {
+      id: "0",
+      title: "Add Resource",
+      url: "https://www.google.com",
+      description: "Add Resource",
+      icon: "https://www.google.com/favicon.ico",
+      memo: "",
+      status: "0",
+    },
+    {
+      id: "1",
+      title: "Copy Resource",
+      url: "about:blank",
+      description: "Copy Resource another family member",
+      icon: "https://www.google.com/favicon.ico",
+      memo: "",
+      status: "0",
+    },
+  ];
+
+  let content = JSON.stringify(focusMemberBrowseList);
+  result = SaveAccountData(keyname, content);
+  return result;
 }
 
-// const userProfile = {
-//   rid: generateId(),
-//   nickname: text_nickname,
-//   username: text_username,
-//   password: text_password,
-//   email: text_email,
-// };
+export function EncryptString(text) {
+  if (text === "") {
+    return "";
+  }
 
-// const userSetting = {
-//   rid: rid,
-//   editView: true,
-// };
+  // const randomBytes1 = new Uint8Array(4);
+  // const randomBytes2 = new Uint8Array(4);
+  // getRandomValues(randomBytes1);
+  // getRandomValues(randomBytes2);
+  // console.log(randomBytes1);
+  // console.log(randomBytes2);
+  // return "";
+  // let secretKey1 = Math.random().toString(36).slice(2, 6);
+  // let secretKey2 = Math.random().toString(36).slice(2, 6);
 
-// const userData = {
-//   rid: rid,
-//   editView: true,
-//   title: title,
-//   favicon: favicon,
-//   defualt_page: url,
-// };
+  // const encrypted = CryptoJS.AES.encrypt(text, secretKey1 + secretKey2);
+  // result = secretKey1 + encrypted.toString() + secretKey2;
+  // return result;
+
+  return CryptoJS.AES.encrypt(text, "aabbc").toString();
+}
+
+export function DecryptString(encryptedText) {
+  if (encryptedText === "") {
+    return "";
+  }
+  // let secretKey1 = encryptedText.slice(0, 4);
+  // let secretKey2 = encryptedText.slice(-4);
+  // encryptedText = encryptedText.slice(4, -4);
+  // const bytes = CryptoJS.AES.decrypt(encryptedText, secretKey1 + secretKey2);
+  const bytes = CryptoJS.AES.decrypt(encryptedText, "aabbc");
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+// export function getShowNavigationBar() {
+//   return showNavigationBar;
+// }
+
+// export function setShowNavigationBar(value) {
+//   set_ShowNavigationBar(value);
+// }
+
+// let currentAccountID = ""; // Current account ID
+// let currentMemberList = ""; // Current member list in current account
+
+// let focusMemberID = ""; // focus member ID in current account ID
+// let focusMemberBrowseList = ""; // resource list and settings of focus member (list of URL, title, description, icon, memo, status) Current account family member list and settings
+
+// export function setCurrentAccountAndMemberList(value) {
+//   currentAccountID = value;
+// }

@@ -2,7 +2,14 @@ import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
-import { GetInfo, SetInfo } from "../utility/Common";
+import {
+  CheckUsernameisExist,
+  GenerateNewId,
+  GetStorageKey,
+  getUserID,
+  LoadData_local,
+  SaveData_local,
+} from "../utility/Common";
 
 export default function Signup({ navigation }) {
   const [text_nickname, setNickName] = useState("");
@@ -41,34 +48,40 @@ export default function Signup({ navigation }) {
       return;
     }
 
-    // Load current account numbers in AsyncStorage
-    try {
-      console.log("@KidWebBrowser:AccountNums");
+    // Check if the user has entered a valid username and email address
+    let checkValue = await CheckUsernameisExist(text_username, text_email);
 
-      const value = await AsyncStorage.getItem("@KidWebBrowser:AccountNums");
+    if (checkValue == 0) {
+      //add new account
+      value = await LoadData_local(GetStorageKey());
 
-      if (value !== null) {
-        setAccountNums(parseInt(value) + 1);
+      let myAccount = {
+        accountID: GenerateNewId("account"),
+        nickname: text_nickname,
+        username: text_username,
+        email: text_email,
+        password: text_password,
+      };
+
+      if (value != "" && value != null) {
+        let blocks = JSON.parse(value);
+        blocks.push(myAccount);
+        value = JSON.stringify(blocks);
       } else {
-        setAccountNums(1);
+        let blocks = [];
+        blocks.push(myAccount);
+        value = JSON.stringify(blocks);
       }
-    } catch (error) {
-      // No account found
-      // setAccountNums(1);
-      console.log(error);
-    }
 
-    // Save the user data in AsyncStorage
-    try {
-      console.log(`Save data inside`);
-      const result = await AsyncStorage.setItem(
-        "@KidWebBrowser:AccountNums",
-        accountNums.toString()
-      );
-      console.log(result);
-    } catch (error) {
-      // Error saving data
-      console.log(error);
+      SaveData_local(GetStorageKey(), value);
+      alert("Account created successfully");
+      navigation.navigate("Login");
+    } else if (checkValue == 1) {
+      alert("Username already exists");
+      return;
+    } else if (checkValue == 2) {
+      alert("Email address already exists");
+      return;
     }
   };
 
