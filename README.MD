@@ -30,7 +30,7 @@ Kid lock, full screen
 
 ## Procedure
 
-![](assets/20230810_135448_KidWebBrowser.png)
+![Alt text](KidWebBrowser.png)
 
 ## Data Structre
 
