@@ -13,7 +13,9 @@ export default function Login({ navigation }) {
 
     if (resultID != "") {
       SetCurrentID("currentAccountID", resultID);
-      console.log("currentAccountID: " + GetCurrentID("currentAccountID"));
+      console.log(
+        "currentAccountID - Login page: " + GetCurrentID("currentAccountID")
+      );
       navigation.navigate("UserProfile");
 
       // setShowNavigationBar(false);

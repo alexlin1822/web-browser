@@ -34,9 +34,9 @@ Kid lock, full screen
 
 ## Data Structure
 
-#### Account List object
-
 ```
+#### Account List object ####
+
 myAccountList = [
     {
         accountID: GenerateNewId("account"),
@@ -48,7 +48,7 @@ myAccountList = [
     {....}
 ];
 
-#### Account profile object
+#### Account profile object ####
 
 myAccountProfile = {
     owner: "accountID",
@@ -78,7 +78,7 @@ myAccountProfile = {
 };
 
 
-#### Resource profile object
+#### Resource profile object ####
 
 myResourceProfile = {
     owner: "memberID (mid)",
@@ -87,7 +87,7 @@ myResourceProfile = {
             rid: "0",
             title: "Add resource",
             description: "Add resource",
-            default_url:""
+            default_url:"",
             icon: "https://www.google.com/favicon.ico",
             memo: "",
             status: "0",
@@ -99,7 +99,7 @@ myResourceProfile = {
             mid: GenerateNewId("resource"),
             title: "facebook",
             description: "facebook",
-            defaulturl:"https://www.facebook.com"
+            default_url:"https://www.facebook.com",
             icon: "https://www.facebook.com/favicon.ico",
             memo: "",
             status: "0",
