@@ -97,21 +97,8 @@ export function InitResourceProfile(memberID) {
         use_url_include: true,
         use_title_include: false,
         use_whitelist: false,
-        lastURL: "https://www.google.com/",
+        last_url: "https://www.google.com/",
       },
-      //   {
-      //       mid: GenerateNewId("resource"),
-      //       title: "facebook",
-      //       description: "facebook",
-      //       defaulturl:"https://www.facebook.com",
-      //       icon: "https://www.facebook.com/favicon.ico",
-      //       memo: "",
-      //       status: "0",
-      //       url_filter:["facebook.com","www.faceook.com"], #the url must include "facebook.com" or "www.facebook.com"
-      //       title_filter:["facebook","face"], #the title must include "facebook" or "face"
-      //       whitelist:["www.facebook.com"], # Allow all url in this field.
-      //       lastURL: "https://www.facebook.com",
-      //   },
       // {...}
     ],
   };

@@ -9,16 +9,24 @@ import {
   Button,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { GenerateNewId } from "../utility/Common";
 
-export default function BrowserEditBar({ updateURL }) {
-  const [defaultUrl, setDefaultUrl] = useState("");
-  const [urlInclude, setUrlInclude] = useState("");
-  const [titleInclude, setTitleInclude] = useState("");
-  const [whiteList, setWhiteList] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  // const [useUrlInclude, setUseUseUrlInclude] = useState(true);
-  // const [userTitleInclude, setUseTitleInclude] = useState(false);
-  // const [useWhiteList, setUseWhiteList] = useState(false);
+export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
+  console.log("BrowserEditBar", resourceList);
+
+  const [rid, setRid] = useState(resourceList.rid);
+  const [defaultUrl, setDefaultUrl] = useState(resourceList.default_url);
+  const [urlInclude, setUrlInclude] = useState(resourceList.url_include);
+  const [titleInclude, setTitleInclude] = useState(resourceList.title_include);
+  const [whiteList, setWhiteList] = useState(resourceList.whitelist);
+
+  const [useUrlInclude, setUseUrlInclude] = useState(
+    resourceList.use_url_include
+  );
+  const [userTitleInclude, setUseTitleInclude] = useState(
+    resourceList.use_title_include
+  );
+  const [useWhiteList, setUseWhiteList] = useState(resourceList.use_whitelist);
 
   const handleOptionToggle = (option) => {
     console.log(selectedOptions);
@@ -33,12 +41,33 @@ export default function BrowserEditBar({ updateURL }) {
     return selectedOptions.includes(option);
   };
 
-  //* handleSearch function
-  const handleSearch = () => {
-    // let tmp = addHttps(text);
-    // setText(tmp);
-    // setCurURL(tmp);
-    // onSubmit(tmp);
+  //* Save Setting function
+  const handleSubmit = () => {
+    let newResourceList = {
+      rid:
+        resourceList.rid === "0" ? GenerateNewId("resource") : resourceList.rid,
+      title: resourceList.rid === "0" ? defaultUrl : resourceList.title,
+      description: resourceList.rid === "0" ? "" : resourceList.description,
+      default_url: defaultUrl,
+      icon: defaultUrl + "/favicon.ico",
+      memo: resourceList.rid === "0" ? "" : resourceList.memo,
+      status: resourceList.rid === "0" ? "" : resourceList.status,
+      url_include: urlInclude,
+      title_include: titleInclude,
+      whitelist: whiteList,
+      use_url_include: useUrlInclude,
+      use_title_include: userTitleInclude,
+      use_whitelist: useWhiteList,
+      last_url:
+        resourceList.rid === "0"
+          ? resourceList.default_url
+          : resourceList.last_url,
+    };
+    onSubmit(newResourceList);
+  };
+
+  const handleCancel = () => {
+    onSubmit(null);
   };
 
   const handleSetDefalut = () => {
@@ -83,17 +112,22 @@ export default function BrowserEditBar({ updateURL }) {
           value={defaultUrl}
           placeholder="Please type or click the button to import the URL here"
         />
-        <Button title="  Submit  " onPress={handleSearch} />
-        <Button title=" Cancel " onPress={handleSearch} />
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.submitButton} onPress={handleCancel}>
+          <Text style={styles.buttonText}> Cancel</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", padding: 2 }}>
         <TouchableOpacity
           style={[
             styles.optionButton,
-            isOptionSelected("urlInclude") && styles.optionButtonSelected,
+            useUrlInclude && styles.optionButtonSelected,
           ]}
-          onPress={() => handleOptionToggle("urlInclude")}
+          onPress={() => setUseUrlInclude(!useUrlInclude)}
         >
           <Text style={styles.optionText}>URL Include</Text>
         </TouchableOpacity>
@@ -115,9 +149,9 @@ export default function BrowserEditBar({ updateURL }) {
         <TouchableOpacity
           style={[
             styles.optionButton,
-            isOptionSelected("titleInclude") && styles.optionButtonSelected,
+            userTitleInclude && styles.optionButtonSelected,
           ]}
-          onPress={() => handleOptionToggle("titleInclude")}
+          onPress={() => setUseTitleInclude(!userTitleInclude)}
         >
           <Text style={styles.optionText}>Title Include</Text>
         </TouchableOpacity>
@@ -140,9 +174,9 @@ export default function BrowserEditBar({ updateURL }) {
         <TouchableOpacity
           style={[
             styles.optionButton,
-            isOptionSelected("whiteList") && styles.optionButtonSelected,
+            useWhiteList && styles.optionButtonSelected,
           ]}
-          onPress={() => handleOptionToggle("whiteList")}
+          onPress={() => setUseWhiteList(!useWhiteList)}
         >
           <Text style={styles.optionText}>Whitelist</Text>
         </TouchableOpacity>
@@ -180,10 +214,18 @@ const styles = StyleSheet.create({
     height: 48,
     resizeMode: "contain",
   },
+  submitButton: {
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
+    marginLeft: 10,
+  },
   buttonText: {
     marginTop: 10,
     fontSize: 18,
     fontWeight: "bold",
+    color: "white",
   },
   text: {
     fontSize: 12,
@@ -195,14 +237,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionButton: {
-    backgroundColor: "blue",
+    backgroundColor: "grey",
     padding: 10,
     margin: 5,
     borderRadius: 5,
     marginLeft: 10,
   },
   optionButtonSelected: {
-    backgroundColor: "lightblue",
+    backgroundColor: "green",
     marginLeft: 10,
   },
   optionText: {

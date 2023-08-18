@@ -11,11 +11,22 @@ import { InitAccountProfile } from "../utility/DataStructure";
 
 import PeopleCard from "../components/people_card";
 
-export default function UserProfile({ navigation }) {
-  const [isLoading, setIsLoading] = useState(true);
+export default function UserProfile({ route, navigation }) {
+  const { needLoad } = route.params;
+  const [isLoading, setIsLoading] = useState(needLoad);
   const [myAccountProfile, setMyAccountProfile] = useState({});
 
   const currentAccountID = GetCurrentID("currentAccountID");
+
+  // PeopleCard click event
+  const clickPeopleCard = (mid) => {
+    if (isLoading) return;
+
+    console.log("clickPeopleCard - UserProfile " + mid);
+    const resultID = mid;
+    SetCurrentID("focusMemberID", resultID);
+    navigation.navigate("Home", { needLoad: true });
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -50,14 +61,6 @@ export default function UserProfile({ navigation }) {
     fetchData();
   }, []);
 
-  // PeopleCard click event
-  const clickPeopleCard = (mid) => {
-    console.log("clickPeopleCard: " + mid);
-    const resultID = mid;
-    SetCurrentID("focusMemberID", resultID);
-    navigation.navigate("Home");
-  };
-
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   } else {
@@ -65,6 +68,7 @@ export default function UserProfile({ navigation }) {
       <View style={styles.container}>
         {myAccountProfile.memberlist.map((item) => (
           <PeopleCard
+            key={item.key}
             mid={item.key}
             title={item.title}
             icon={item.icon}

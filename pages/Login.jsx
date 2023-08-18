@@ -16,7 +16,7 @@ export default function Login({ navigation }) {
       console.log(
         "currentAccountID - Login page: " + GetCurrentID("currentAccountID")
       );
-      navigation.navigate("UserProfile");
+      navigation.navigate("UserProfile", { needLoad: true });
 
       // setShowNavigationBar(false);
       // console.log(getShowNavigationBar());

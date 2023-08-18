@@ -10,17 +10,30 @@ import {
 import { InitResourceProfile } from "../utility/DataStructure";
 import ResourceCard from "../components/resource_card";
 
-export default function Home({ navigation }) {
-  const [isLoading, setIsLoading] = useState(true);
+export default function Home({ route, navigation }) {
+  const { needLoad } = route.params;
+  const [isLoading, setIsLoading] = useState(needLoad);
   const [resourceProfile, setResourceList] = useState({});
 
   const currentAccountID = GetCurrentID("currentAccountID");
   const focusMemberID = GetCurrentID("focusMemberID");
 
+  // ResourceCard click event
+  const clickResourceCard = (item) => {
+    if (isLoading) return;
+    console.log("check point");
+    console.log("clickResourceCard RID: " + item.rid);
+    console.log("default_url: " + item.default_url);
+
+    SetCurrentID("currentResourceID", item.rid);
+    // navigation.navigate("Browser", { item: item, isEditMode: true });
+    navigation.navigate("BrowserViewer", { item: item, isEditMode: true });
+  };
+
   useEffect(() => {
     async function fetchData() {
       // For test clear this account profile
-      await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
+      // await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
 
       try {
         // Pre-load
@@ -55,15 +68,6 @@ export default function Home({ navigation }) {
     fetchData();
   }, []);
 
-  // ResourceCard click event
-  const clickResourceCard = (rid, default_url) => {
-    console.log("clickResourceCard RID: " + rid);
-    console.log("default_url: " + default_url);
-
-    SetCurrentID("currentResourceID", rid);
-    navigation.navigate("Browser", { searchText: default_url });
-  };
-
   if (isLoading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   } else {
@@ -71,11 +75,9 @@ export default function Home({ navigation }) {
       <View style={styles.container}>
         {resourceProfile.resourcelist.map((item) => (
           <ResourceCard
-            title={item.title}
-            icon={item.icon}
-            default_url={item.default_url}
-            description={item.description}
-            onSubmit={clickResourceCard(item.rid, item.default_url)}
+            key={item.rid}
+            item={item}
+            onSubmitResource={clickResourceCard}
           />
         ))}
       </View>

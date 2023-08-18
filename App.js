@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
+import BrowserViewer from "./pages/BrowserViewer";
 
 const Stack = createStackNavigator();
 
@@ -69,6 +70,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Browser" component={Browser} />
+        <Stack.Screen name="BrowserViewer" component={BrowserViewer} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
       </Stack.Navigator>

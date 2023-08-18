@@ -28,12 +28,12 @@ export default function PeopleCard({
     //   memo: memo,
     //   status: status,
     // };
-    // console.log("People card Clicked: " + JSON.stringify(param));
+    console.log("People card Clicked: " + JSON.stringify(mid));
     onSubmit(mid);
   };
   // source={require("../assets/favicon.png")}
   return (
-    <View style={styles.card}>
+    <View style={styles.card} key={mid}>
       <TouchableOpacity style={styles.button} onPress={handleClick}>
         {strIcon.startsWith("http") ? (
           <Image source={{ uri: icon }} style={styles.image} />

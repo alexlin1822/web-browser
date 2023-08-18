@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button} from 'react-native';
-import { Feather } from '@expo/vector-icons'; 
+import React, { useState } from "react";
+import { StyleSheet, View, TextInput, Button } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
-export default function SearchBar({ onSubmit, updateURL}) {
-  const [text, setText] = useState('https://www.google.com/');
-  const [curURL, setCurURL] = useState('https://www.google.com/');
+export default function SearchBar({ onSubmit, updateURL }) {
+  console.log("SearchBar updateURL: " + updateURL);
+  const [text, setText] = useState(updateURL);
+  const [curURL, setCurURL] = useState(updateURL);
 
-  
   if (updateURL != curURL) {
     setText(updateURL);
     setCurURL(updateURL);
@@ -14,7 +14,7 @@ export default function SearchBar({ onSubmit, updateURL}) {
 
   //* handleSearch function
   const handleSearch = () => {
-    let tmp=addHttps(text)
+    let tmp = addHttps(text);
     setText(tmp);
     setCurURL(tmp);
     onSubmit(tmp);
@@ -24,22 +24,28 @@ export default function SearchBar({ onSubmit, updateURL}) {
     const startsWithHttp = input.startsWith("http://");
     const startsWithHttps = input.startsWith("https://");
 
-    if (input.trim()=="about:blank" || input.trim()==""){
-      return "https://www.google.com/";
-    }
-    else if (!startsWithHttp && !startsWithHttps) {
+    if (input.trim() == "about:blank" || input.trim() == "") {
+      return updateURL;
+    } else if (!startsWithHttp && !startsWithHttps) {
       return "https://" + input;
-    }
-    else{
+    } else {
       return input;
     }
   }
 
   return (
-    <View style={{flexDirection: 'row', alignItems: 'center' , padding: 10}}>
-        <Feather name="search" size={16} color="black" />
+    <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
+      <Feather name="search" size={16} color="black" />
       <TextInput
-        style={{flex: 1, marginLeft:10, marginRight:2,  paddingLeft: 10, height: 32, borderColor: 'gray', borderWidth: 1}}
+        style={{
+          flex: 1,
+          marginLeft: 10,
+          marginRight: 2,
+          paddingLeft: 10,
+          height: 32,
+          borderColor: "gray",
+          borderWidth: 1,
+        }}
         onChangeText={setText}
         value={text}
         placeholder="Please type the URL here"
