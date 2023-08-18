@@ -8,14 +8,25 @@ import {
   Image,
 } from "react-native";
 
-export default function ResourceCard({ title, icon, url, description }) {
+export default function ResourceCard({ item, onSubmitResource }) {
+  let strIcon = item.icon.toString();
+
+  const handleClick = () => {
+    console.log("Resource card Clicked: " + item.rid);
+    onSubmitResource(item);
+  };
+
   return (
-    <View style={styles.card}>
-      <TouchableOpacity style={styles.button}>
-        <Image source={{ uri: icon }} style={styles.image} />
-        <Text style={styles.text}>{title}</Text>
-        <Text>{url}</Text>
-        <Text>{description}</Text>
+    <View style={styles.card} key={item.rid}>
+      <TouchableOpacity style={styles.button} onPress={handleClick}>
+        {strIcon.startsWith("http") ? (
+          <Image source={{ uri: item.icon }} style={styles.image} />
+        ) : (
+          <Image source={strIcon} style={styles.image} />
+        )}
+        <Text style={styles.text}>{item.title}</Text>
+        <Text>{item.default_url}</Text>
+        <Text>{item.description}</Text>
       </TouchableOpacity>
     </View>
   );

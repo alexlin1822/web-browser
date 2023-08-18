@@ -11,6 +11,11 @@ import {
   SaveData_local,
 } from "../utility/Common";
 
+import {
+  InitNewAccountList_local,
+  AddNewAccount,
+} from "../utility/DataStructure";
+
 export default function Signup({ navigation }) {
   const [text_nickname, setNickName] = useState("");
   const [text_username, setUserName] = useState("");
@@ -36,45 +41,55 @@ export default function Signup({ navigation }) {
       return;
     }
 
-    // Check if the user has entered a valid email address
-    if (!text_email.includes("@")) {
-      alert("Please enter a valid email address");
-      return;
-    }
+    // // Check if the user has entered a valid email address
+    // if (!text_email.includes("@")) {
+    //   alert("Please enter a valid email address");
+    //   return;
+    // }
 
-    // Check if the user has entered a valid password
-    if (text_password.length < 6) {
-      alert("Password must be at least 6 characters long");
-      return;
-    }
+    // // Check if the user has entered a valid password
+    // if (text_password.length < 6) {
+    //   alert("Password must be at least 6 characters long");
+    //   return;
+    // }
+
+    //For Testing clear the account list
+    // await SaveData_local(GetStorageKey(), "");
 
     // Check if the user has entered a valid username and email address
     let checkValue = await CheckUsernameisExist(text_username, text_email);
 
     if (checkValue == 0) {
       //add new account
-      value = await LoadData_local(GetStorageKey());
-
-      let myAccount = {
-        accountID: GenerateNewId("account"),
-        nickname: text_nickname,
-        username: text_username,
-        email: text_email,
-        password: text_password,
-      };
+      let value = await LoadData_local(GetStorageKey());
 
       if (value != "" && value != null) {
+        let myAccount = AddNewAccount(
+          GenerateNewId("account"),
+          text_nickname,
+          text_username,
+          text_email,
+          text_password
+        );
         let blocks = JSON.parse(value);
         blocks.push(myAccount);
         value = JSON.stringify(blocks);
       } else {
-        let blocks = [];
-        blocks.push(myAccount);
-        value = JSON.stringify(blocks);
+        value = InitNewAccountList_local(
+          GenerateNewId("account"),
+          text_nickname,
+          text_username,
+          text_email,
+          text_password
+        );
       }
 
+      //Save the account list to local storage
       SaveData_local(GetStorageKey(), value);
+
       alert("Account created successfully");
+
+      //navigate to login page
       navigation.navigate("Login");
     } else if (checkValue == 1) {
       alert("Username already exists");

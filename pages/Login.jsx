@@ -13,8 +13,10 @@ export default function Login({ navigation }) {
 
     if (resultID != "") {
       SetCurrentID("currentAccountID", resultID);
-      console.log("currentAccountID: " + GetCurrentID("currentAccountID"));
-      navigation.navigate("UserProfile");
+      console.log(
+        "currentAccountID - Login page: " + GetCurrentID("currentAccountID")
+      );
+      navigation.navigate("UserProfile", { needLoad: true });
 
       // setShowNavigationBar(false);
       // console.log(getShowNavigationBar());

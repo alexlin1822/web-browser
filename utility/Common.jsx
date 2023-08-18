@@ -7,7 +7,6 @@
  * @requires react
  * @requires react-native
  * @requires @react-native-async-storage/async-storage
-
  *
  */
 import React, { useState } from "react";
@@ -19,27 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // App settings
 const appName = "@KidWebBrowser";
 
-// const userProfile = {
-//   rid: generateId(),
-//   nickname: text_nickname,
-//   username: text_username,
-//   password: text_password,
-//   email: text_email,
-// };
-
-// const userSetting = {
-//   rid: rid,
-//   editView: true,
-// };
-
-// const userData = {
-//   rid: rid,
-//   editView: true,
-//   title: title,
-//   favicon: favicon,
-//   defualt_page: url,
-// };
-
 // const [showNavigationBar, set_ShowNavigationBar] = useState(true);
 // let showNavigationBar = true;
 
@@ -48,13 +26,6 @@ const appName = "@KidWebBrowser";
 let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
-
-// let currentMemberList = ""; // Current member list in current account
-
-// resource list and settings of focus member
-//(list of URL, title, description, icon, memo, status, roles)
-//Current account family member list and settings
-// let focusMemberBrowseList = "";
 
 /* Common functions for all pages and components*/
 
@@ -270,63 +241,6 @@ async function LoadCurrentData(currentID) {
     console.log(error);
     return false;
   }
-}
-
-/**
- * initialize the new member list for a new account
- * @returns : boolean
- */
-function InitNewMemberList() {
-  result = false;
-
-  let keyname = appName + "_" + currentAccountID + "_memberList";
-  currentMemberList = [
-    {
-      mid: "0",
-      title: "Add Person",
-      description: "Add your kid or family member",
-      icon: "https://www.google.com/favicon.ico",
-      memo: "",
-      status: "0",
-    },
-  ];
-  let content = JSON.stringify(currentMemberData);
-  result = SaveAccountData(keyname, content);
-  return result;
-}
-
-/**
- * initialize the new browse list for a new member
- * @returns : boolean
- */
-function InitNewBrowseList() {
-  result = false;
-  let keyname =
-    appName + "_" + currentAccountID + "_" + focusMemberID + "_BrowseList";
-  focusMemberBrowseList = [
-    {
-      id: "0",
-      title: "Add Resource",
-      url: "https://www.google.com",
-      description: "Add Resource",
-      icon: "https://www.google.com/favicon.ico",
-      memo: "",
-      status: "0",
-    },
-    {
-      id: "1",
-      title: "Copy Resource",
-      url: "about:blank",
-      description: "Copy Resource another family member",
-      icon: "https://www.google.com/favicon.ico",
-      memo: "",
-      status: "0",
-    },
-  ];
-
-  let content = JSON.stringify(focusMemberBrowseList);
-  result = SaveAccountData(keyname, content);
-  return result;
 }
 
 export function EncryptString(text) {
