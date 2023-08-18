@@ -8,7 +8,11 @@ import {
   Image,
 } from "react-native";
 
-export default function ResourceCard({ item, onSubmitResource }) {
+export default function ResourceCard({
+  item,
+  onSubmitResource,
+  onSubmitLongResource,
+}) {
   let strIcon = item.icon.toString();
 
   const handleClick = () => {
@@ -16,9 +20,18 @@ export default function ResourceCard({ item, onSubmitResource }) {
     onSubmitResource(item);
   };
 
+  const handleLongClick = () => {
+    console.log("Resource card Clicked: " + item.rid);
+    onSubmitLongResource(item);
+  };
+
   return (
     <View style={styles.card} key={item.rid}>
-      <TouchableOpacity style={styles.button} onPress={handleClick}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleClick}
+        onLongPress={handleLongClick}
+      >
         {strIcon.startsWith("http") ? (
           <Image source={{ uri: item.icon }} style={styles.image} />
         ) : (

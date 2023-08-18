@@ -30,6 +30,17 @@ export default function Home({ route, navigation }) {
     navigation.navigate("BrowserViewer", { item: item, isEditMode: true });
   };
 
+  const longClickResourceCard = (item) => {
+    if (isLoading) return;
+    console.log("check point");
+    console.log("clickResourceCard RID: " + item.rid);
+    console.log("default_url: " + item.default_url);
+
+    SetCurrentID("currentResourceID", item.rid);
+    // navigation.navigate("Browser", { item: item, isEditMode: true });
+    navigation.navigate("Browser", { item: item, isEditMode: true });
+  };
+
   useEffect(() => {
     async function fetchData() {
       // For test clear this account profile
@@ -78,6 +89,7 @@ export default function Home({ route, navigation }) {
             key={item.rid}
             item={item}
             onSubmitResource={clickResourceCard}
+            onSubmitLongResource={longClickResourceCard}
           />
         ))}
       </View>
