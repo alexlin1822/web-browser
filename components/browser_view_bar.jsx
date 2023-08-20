@@ -1,16 +1,8 @@
-import React, { useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  StyleSheet,
-  TextInput,
-  Button,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-export default function BrowserViewBar({ resourceList }) {
+export default function BrowserViewBar({ resourceList, timeLeft }) {
   const [rid, setRid] = useState(resourceList.rid);
   const [defaultUrl, setDefaultUrl] = useState(resourceList.default_url);
   const [urlInclude, setUrlInclude] = useState(resourceList.url_include);
@@ -52,96 +44,47 @@ export default function BrowserViewBar({ resourceList }) {
     // setDefaultUrl(updateURL);
   };
 
-  //   function addHttps(input) {
-  //     const startsWithHttp = input.startsWith("http://");
-  //     const startsWithHttps = input.startsWith("https://");
-
-  //     if (input.trim() == "about:blank" || input.trim() == "") {
-  //       return "https://www.google.com/";
-  //     } else if (!startsWithHttp && !startsWithHttps) {
-  //       return "https://" + input;
-  //     } else {
-  //       return input;
-  //     }
-  //   }
-
-  return (
-    <View style={{ backgroundColor: "#d4e3fa", paddingVertical: 5 }}>
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
-        <TouchableOpacity
-          style={[
-            styles.optionButton,
-            isOptionSelected("whiteList") && styles.optionButtonSelected,
-          ]}
-          onPress={() => handleOptionToggle("whiteList")}
-        >
-          <Text style={styles.optionText}>Whitelist</Text>
-        </TouchableOpacity>
-        <TextInput
-          style={{
-            flex: 1,
-            marginLeft: 10,
-            marginRight: 2,
-            paddingLeft: 10,
-            height: 32,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
-          onChangeText={setWhiteList}
-          value={whiteList}
-          placeholder='Please type the whitelist here, use "," to spearte.'
-        />
-      </View>
-    </View>
-  );
+  return;
+  // return (
+  //   <View style={styles.container}>
+  //     <View>
+  //       <Text>Time left: {timeLeft}</Text>
+  //     </View>
+  //     <View style={styles.buttonContainer}>
+  //       <TouchableOpacity style={styles.button}>
+  //         <Text style={styles.buttonText}>Button 1</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.button}>
+  //         <Text style={styles.buttonText}>Button 2</Text>
+  //       </TouchableOpacity>
+  //       <TouchableOpacity style={styles.button}>
+  //         <Text style={styles.buttonText}>Button 3</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   </View>
+  // );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "transparent",
     alignItems: "center",
+    justifyContent: "flex-end",
   },
-  tableRow: {
+  buttonContainer: {
     flexDirection: "row",
-    marginBottom: 5,
+    justifyContent: "center",
+    marginBottom: 20,
   },
-  imageButton: {
-    width: 48,
-    height: 48,
-    resizeMode: "contain",
-  },
-  buttonText: {
-    marginTop: 10,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: "bold",
+  button: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
     marginHorizontal: 10,
   },
-  label: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  optionButton: {
-    backgroundColor: "blue",
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  optionButtonSelected: {
-    backgroundColor: "lightblue",
-    marginLeft: 10,
-  },
-  optionText: {
+  buttonText: {
     color: "white",
-    fontSize: 16,
-  },
-  selectedOptionsText: {
-    marginTop: 20,
     fontSize: 16,
     fontWeight: "bold",
   },

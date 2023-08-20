@@ -2,20 +2,50 @@ import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
-  Image,
   Text,
   StyleSheet,
   TextInput,
-  Button,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GenerateNewId } from "../utility/Common";
 
-export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
+export default function BrowserEditBar({
+  resourceList,
+  onSubmit,
+  updateURL,
+  updateTitle,
+}) {
   console.log("BrowserEditBar", resourceList);
 
-  const [rid, setRid] = useState(resourceList.rid);
+  // rid: "0",              no
+  // title: "Add resource",
+  // description: "Add resource",
+  // default_url: "https://www.google.com/",
+  // icon: "https://www.google.com/favicon.ico",   no
+  // memo: "",
+  // status: "0",
+  // url_include: "",
+  // title_include: "",
+  // whitelist: "",
+  // use_url_include: true,
+  // use_title_include: false,
+  // use_whitelist: false,
+  // last_url: "https://www.google.com/",          no
+  // time_limit: "30",
+
   const [defaultUrl, setDefaultUrl] = useState(resourceList.default_url);
+  const [webTitle, setWebTitle] = useState(
+    resourceList.rid === "0" ? "Google" : resourceList.title
+  );
+
+  const [description, setDescription] = useState(
+    resourceList.rid === "0" ? "" : resourceList.description
+  );
+
+  const [memo, setMemo] = useState(resourceList.memo);
+  const [resourceStatus, setResourceStatus] = useState(resourceList.status);
+
   const [urlInclude, setUrlInclude] = useState(resourceList.url_include);
   const [titleInclude, setTitleInclude] = useState(resourceList.title_include);
   const [whiteList, setWhiteList] = useState(resourceList.whitelist);
@@ -28,42 +58,78 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
   );
   const [useWhiteList, setUseWhiteList] = useState(resourceList.use_whitelist);
 
-  const handleOptionToggle = (option) => {
-    console.log(selectedOptions);
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
+  const [timeLimit, setTimeLimit] = useState(resourceList.time_limit);
+
+  const handleSetValue = (type) => {
+    console.log("handleSetValue", type);
+    if (type === "url_include") {
+      let tmp = urlInclude;
+      if (tmp.length > 0) {
+        tmp += ",";
+      }
+      tmp += updateURL;
+      tmp = clearupURL(tmp);
+      setUrlInclude(tmp);
+    } else if (type === "title_include") {
+      let tmp = titleInclude;
+      if (tmp.length > 0) {
+        tmp += ",";
+      }
+      tmp += updateTitle;
+      setTitleInclude(tmp);
+    } else if (type === "whitelist") {
+      let tmp = whiteList;
+      if (tmp.length > 0) {
+        tmp += ",";
+      }
+      tmp += updateURL;
+      tmp = clearupURL(tmp);
+      setWhiteList(tmp);
     }
   };
 
-  const isOptionSelected = (option) => {
-    return selectedOptions.includes(option);
+  const clearupURL = (input) => {
+    let tmp = input;
+    tmp = tmp.replace("https://", "");
+    tmp = tmp.replace("http://", "");
+    if (tmp.endsWith("/")) {
+      tmp = tmp.slice(0, -1);
+    }
+    return tmp;
   };
 
   //* Save Setting function
   const handleSubmit = () => {
+    console.log("handleSubmit" + resourceList);
+    console.log(resourceList);
+
     let newResourceList = {
       rid:
         resourceList.rid === "0" ? GenerateNewId("resource") : resourceList.rid,
-      title: resourceList.rid === "0" ? defaultUrl : resourceList.title,
-      description: resourceList.rid === "0" ? "" : resourceList.description,
+      title: webTitle,
+      description: description,
       default_url: defaultUrl,
-      icon: defaultUrl + "/favicon.ico",
-      memo: resourceList.rid === "0" ? "" : resourceList.memo,
-      status: resourceList.rid === "0" ? "" : resourceList.status,
+      icon: getIcon(defaultUrl),
+      memo: memo,
+      status: resourceStatus,
       url_include: urlInclude,
       title_include: titleInclude,
       whitelist: whiteList,
       use_url_include: useUrlInclude,
       use_title_include: userTitleInclude,
       use_whitelist: useWhiteList,
-      last_url:
-        resourceList.rid === "0"
-          ? resourceList.default_url
-          : resourceList.last_url,
+      last_url: defaultUrl,
+      time_limit: timeLimit,
     };
+    console.log("NewSubmit" + newResourceList);
+    console.log(newResourceList);
+
     onSubmit(newResourceList);
+  };
+
+  const getIcon = (url) => {
+    let icon = url + "/favicon.ico";
+    return icon;
   };
 
   const handleCancel = () => {
@@ -72,24 +138,12 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
 
   const handleSetDefalut = () => {
     setDefaultUrl(updateURL);
+    setWebTitle(updateTitle);
   };
-
-  //   function addHttps(input) {
-  //     const startsWithHttp = input.startsWith("http://");
-  //     const startsWithHttps = input.startsWith("https://");
-
-  //     if (input.trim() == "about:blank" || input.trim() == "") {
-  //       return "https://www.google.com/";
-  //     } else if (!startsWithHttp && !startsWithHttps) {
-  //       return "https://" + input;
-  //     } else {
-  //       return input;
-  //     }
-  //   }
 
   return (
     <View style={{ backgroundColor: "#d4e3fa", paddingVertical: 5 }}>
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 2 }}>
+      <View style={styles.rowView}>
         <TouchableOpacity
           style={{ alignItems: "center" }}
           onPress={handleSetDefalut}
@@ -98,30 +152,45 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
           <Text style={styles.text}>Set Default</Text>
         </TouchableOpacity>
         <TextInput
-          style={{
-            flex: 1,
-            marginLeft: 10,
-            marginRight: 2,
-            paddingLeft: 10,
-            height: 32,
-            borderColor: "gray",
-            borderWidth: 1,
-            marginRight: 10,
-          }}
+          style={styles.textInput}
           onChangeText={setDefaultUrl}
           value={defaultUrl}
           placeholder="Please type or click the button to import the URL here"
         />
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.submitButton} onPress={handleCancel}>
-          <Text style={styles.buttonText}> Cancel</Text>
-        </TouchableOpacity>
+        <Text style={styles.text}> Title</Text>
+        <TextInput
+          style={styles.textInput}
+          onChangeText={setWebTitle}
+          value={webTitle}
+          placeholder="Please type or click the button to import the URL here"
+        />
+      </View>
+      <View style={styles.rowView}>
+        <Text style={styles.text}> Description </Text>
+        <TextInput
+          style={styles.textInput && { flex: 0.45 }}
+          onChangeText={setDescription}
+          value={description}
+          placeholder="Please type description here"
+        />
+        <Text style={styles.text}> Memo</Text>
+        <TextInput
+          style={styles.textInput && { flex: 0.45 }}
+          onChangeText={setMemo}
+          value={memo}
+          placeholder="Please type memo here"
+        />
+        <Text style={styles.text}> Time Limit</Text>
+        <TextInput
+          style={styles.textInput && { flex: 0.05 }}
+          onChangeText={setTimeLimit}
+          value={timeLimit}
+          placeholder=""
+        />
+        <Text style={styles.text}>min</Text>
       </View>
 
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 2 }}>
+      <View style={styles.rowView}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -132,20 +201,24 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
           <Text style={styles.optionText}>URL Include</Text>
         </TouchableOpacity>
         <TextInput
-          style={{
-            flex: 0.5,
-            marginLeft: 10,
-            marginRight: 2,
-            paddingLeft: 10,
-            height: 32,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
+          style={styles.textInput}
           onChangeText={setUrlInclude}
           value={urlInclude}
           placeholder="URL include content."
         />
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => handleSetValue("url_include")}
+        >
+          <MaterialCommunityIcons
+            name="target-variant"
+            size={32}
+            color="green"
+          />
+        </TouchableOpacity>
+      </View>
 
+      <View style={styles.rowView}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -156,21 +229,24 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
           <Text style={styles.optionText}>Title Include</Text>
         </TouchableOpacity>
         <TextInput
-          style={{
-            flex: 0.5,
-            marginLeft: 2,
-            marginRight: 10,
-            paddingLeft: 2,
-            height: 32,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
+          style={styles.textInput}
           onChangeText={setTitleInclude}
           value={titleInclude}
           placeholder="Title include content."
         />
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => handleSetValue("title_include")}
+        >
+          <MaterialCommunityIcons
+            name="target-variant"
+            size={32}
+            color="green"
+          />
+        </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
+
+      <View style={styles.rowView}>
         <TouchableOpacity
           style={[
             styles.optionButton,
@@ -181,19 +257,29 @@ export default function BrowserEditBar({ resourceList, onSubmit, updateURL }) {
           <Text style={styles.optionText}>Whitelist</Text>
         </TouchableOpacity>
         <TextInput
-          style={{
-            flex: 1,
-            marginLeft: 10,
-            marginRight: 2,
-            paddingLeft: 10,
-            height: 32,
-            borderColor: "gray",
-            borderWidth: 1,
-          }}
+          style={styles.textInput}
           onChangeText={setWhiteList}
           value={whiteList}
           placeholder='Please type the whitelist here, use "," to spearte.'
         />
+        <TouchableOpacity
+          style={{ alignItems: "center" }}
+          onPress={() => handleSetValue("whitelist")}
+        >
+          <MaterialCommunityIcons
+            name="target-variant"
+            size={32}
+            color="green"
+          />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.rowView}>
+        <TouchableOpacity style={styles.submitButton} onPress={handleCancel}>
+          <Text style={styles.buttonText}> Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -220,8 +306,12 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     borderRadius: 5,
     marginLeft: 10,
+    height: 40,
+    flex: 0.5,
   },
   buttonText: {
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
     fontSize: 18,
     fontWeight: "bold",
@@ -237,6 +327,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 120,
     backgroundColor: "grey",
     padding: 10,
     margin: 5,
@@ -245,7 +338,6 @@ const styles = StyleSheet.create({
   },
   optionButtonSelected: {
     backgroundColor: "green",
-    marginLeft: 10,
   },
   optionText: {
     color: "white",
@@ -255,5 +347,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     fontWeight: "bold",
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 10,
+    marginRight: 2,
+    paddingLeft: 10,
+    height: 32,
+    borderColor: "gray",
+    borderWidth: 1,
+  },
+  rowView: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 2,
   },
 });

@@ -10,11 +10,11 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
 import BrowserViewer from "./pages/BrowserViewer";
+import TimesUp from "./pages/TimesUp";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  // const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
   const [appIsReady, setAppIsReady] = useState(false);
 
   /**
@@ -62,7 +62,7 @@ export default function App() {
       <Stack.Navigator
         screenOptions={{
           // headerShown: getShowNavigationBar,
-          headerShown: true,
+          headerShown: false,
           gestureEnabled: false,
         }} //Hide or show the header
         initialRouteName="Login"
@@ -73,6 +73,7 @@ export default function App() {
         <Stack.Screen name="BrowserViewer" component={BrowserViewer} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
+        <Stack.Screen name="TimesUp" component={TimesUp} />
       </Stack.Navigator>
     </NavigationContainer>
   );
