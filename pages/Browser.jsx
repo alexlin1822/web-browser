@@ -5,8 +5,6 @@ import { StatusBar } from "expo-status-bar";
 import { WebView } from "react-native-webview";
 import SearchBar from "../components/search_bar";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import BrowserEditBar from "../components/browser_edit_bar";
 
 import {
@@ -45,6 +43,7 @@ export default function Browser({ route, navigation }) {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
+      console.log("timeLeft" + timeLeft.toString());
     }, 1000 * 60);
 
     return () => clearInterval(timer);
