@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import {
   CheckUsernameisExist,
   GenerateNewId,
   GetStorageKey,
-  getUserID,
   LoadData_local,
   SaveData_local,
 } from "../utility/Common";
@@ -22,9 +20,6 @@ export default function Signup({ navigation }) {
   const [text_email, setEmail] = useState("");
   const [text_password, setPassword] = useState("");
   const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
-
-  //const obj = JSON.parse('{"name":"John", "age":30, "city":"New York"}');
-  //const myJSON = JSON.stringify(obj);
 
   /**
    * @description This function is called when the user submits the Sign Up form
@@ -53,7 +48,7 @@ export default function Signup({ navigation }) {
     //   return;
     // }
 
-    //For Testing clear the account list
+    // For Testing clear the account list
     // await SaveData_local(GetStorageKey(), "");
 
     // Check if the user has entered a valid username and email address
