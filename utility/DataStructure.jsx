@@ -98,6 +98,7 @@ export function InitResourceProfile(memberID) {
         use_title_include: false,
         use_whitelist: false,
         last_url: "https://www.google.com/",
+        time_limit: "30",
       },
       // {...}
     ],

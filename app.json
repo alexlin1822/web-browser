@@ -20,14 +20,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.alexlam1822.webbrowser"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "permissions": [
-      "WEB_BROWSE",
-      "APP_SLEEP"
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "31436d07-63ce-4eb3-9a1a-606943228f8b"
+      }
+    }
   }
 }

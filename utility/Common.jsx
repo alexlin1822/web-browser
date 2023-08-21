@@ -1,22 +1,24 @@
 /**
  * Common functions for all pages and components
  * Global variables for all pages and components
- * Save and load data in AsyncStorage
+ * Save and load data in Storage
  *
  * @module utility/Common
  * @requires react
  * @requires react-native
- * @requires @react-native-async-storage/async-storage
  *
  */
 import React, { useState } from "react";
 import CryptoJS from "crypto-js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import Storage from "@react-native-async-storage/async-storage";
+// import { Storage } from "expo-storage";
+import * as SecureStore from "expo-secure-store";
 // import { getRandomValues } from "react-native-get-random-values";
 
 /* Global variables */
 // App settings
-const appName = "@KidWebBrowser";
+// const appName = "@KidWebBrowser";
+const appName = "KidWebBrowser";
 
 // const [showNavigationBar, set_ShowNavigationBar] = useState(true);
 // let showNavigationBar = true;
@@ -29,16 +31,17 @@ let currentResourceID = ""; // Current Resource ID
 
 /* Common functions for all pages and components*/
 
-/** Save data to AsyncStorage
+/** Save data to Storage
  * @param {*} keyname : String
  * @param {*} content : String
  * @returns : Boolean
  */
 export async function SaveData_local(keyname, content) {
   console.log(`Saveing data....`);
-  // Save the user data in AsyncStorage
+  // Save the user data in Storage
   try {
-    return await AsyncStorage.setItem(keyname, content);
+    // return await SecureStore.setItemAsync(keyname, content);
+    return await SecureStore.setItemAsync(keyname, content);
   } catch (error) {
     // Error saving data
     console.log(error);
@@ -46,16 +49,17 @@ export async function SaveData_local(keyname, content) {
   }
 }
 
-/** Load data from AsyncStorage
+/** Load data from Storage
  * @param {*} keyname : String
  * @returns : Boolean
  */
 export async function LoadData_local(keyname) {
-  // Load current account numbers and list in AsyncStorage
+  // Load current account numbers and list in Storage
   try {
     console.log("Loading Data.....");
 
-    const value = await AsyncStorage.getItem(keyname);
+    // const value = await SecureStore.getItemAsync(keyname);
+    const value = await SecureStore.getItemAsync(keyname);
 
     if (value !== null) {
       return value;
@@ -76,15 +80,27 @@ export async function LoadData_local(keyname) {
  * @returns : string
  */
 export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
+  // if (accountID === "" && memberID === "" && resourceID === "") {
+  //   //In the remote version, the account list is stored in the server
+  //   return appName + ":" + "accountList"; // Acount List storage Key (just for local version)
+  // } else if (accountID != "" && memberID === "" && resourceID === "") {
+  //   return appName + ":" + accountID; // Account storage data Key
+  // } else if (accountID != "" && memberID != "" && resourceID === "") {
+  //   return appName + ":" + accountID + "-" + memberID; // Member data
+  // } else if (accountID != "" && memberID != "" && resourceID != "") {
+  //   return appName + ":" + accountID + "-" + memberID + "-" + resourceID; // Resource data
+  // } else {
+  //   return "";
+  // }
   if (accountID === "" && memberID === "" && resourceID === "") {
     //In the remote version, the account list is stored in the server
-    return appName + ":" + "accountList"; // Acount List storage Key (just for local version)
+    return appName + "." + "accountList"; // Acount List storage Key (just for local version)
   } else if (accountID != "" && memberID === "" && resourceID === "") {
-    return appName + ":" + accountID; // Account storage data Key
+    return appName + "." + accountID; // Account storage data Key
   } else if (accountID != "" && memberID != "" && resourceID === "") {
-    return appName + ":" + accountID + "-" + memberID; // Member data
+    return appName + "." + accountID + "-" + memberID; // Member data
   } else if (accountID != "" && memberID != "" && resourceID != "") {
-    return appName + ":" + accountID + "-" + memberID + "-" + resourceID; // Resource data
+    return appName + "." + accountID + "-" + memberID + "-" + resourceID; // Resource data
   } else {
     return "";
   }
@@ -213,7 +229,7 @@ export function SetCurrentID(keyname, content) {
 
 /* internal functions  */
 /**
- * Load current account data in AsyncStorage
+ * Load current account data in Storage
  * @param {*} currentID
  * @returns : Boolean
  */
@@ -222,10 +238,12 @@ async function LoadCurrentData(currentID) {
     console.log("LoadCurrentData");
 
     currentAccountID = currentID;
-    currentUserProfileSetting = await AsyncStorage.getItem(
+    currentUserProfileSetting = await SecureStore.getItemAsync(
       `${appName}:currentUserProfileSetting`
     );
-    currentUserData = await AsyncStorage.getItem(`${appName}:currentUserData`);
+    currentUserData = await SecureStore.getItemAsync(
+      `${appName}:currentUserData`
+    );
 
     if (currentAccountID === null) {
       currentAccountID = "";

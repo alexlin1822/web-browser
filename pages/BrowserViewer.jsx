@@ -5,8 +5,6 @@ import { StatusBar } from "expo-status-bar";
 import { WebView } from "react-native-webview";
 // import SearchBar from "../components/search_bar";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import BrowserEditBar from "../components/browser_edit_bar";
 
 import {

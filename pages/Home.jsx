@@ -19,21 +19,23 @@ export default function Home({ route, navigation }) {
   const focusMemberID = GetCurrentID("focusMemberID");
 
   // ResourceCard click event
-  const clickResourceCard = (item) => {
+  const clickResourceCard = (item, isEditMode) => {
     if (isLoading) return;
-    console.log("check point");
-    console.log("clickResourceCard RID: " + item.rid);
-    console.log("default_url: " + item.default_url);
+    console.log("Home click check point");
+    console.log(item);
 
     SetCurrentID("currentResourceID", item.rid);
-    // navigation.navigate("Browser", { item: item, isEditMode: true });
-    navigation.navigate("BrowserViewer", { item: item, isEditMode: true });
+
+    navigation.navigate("Browser", {
+      item: item,
+      isEditMode: item.rid === "0" ? true : isEditMode,
+    });
   };
 
   useEffect(() => {
     async function fetchData() {
       // For test clear this account profile
-      // await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
+      //await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
 
       try {
         // Pre-load
@@ -77,7 +79,8 @@ export default function Home({ route, navigation }) {
           <ResourceCard
             key={item.rid}
             item={item}
-            onSubmitResource={clickResourceCard}
+            onSubmitResource={() => clickResourceCard(item, false)}
+            onSubmitLongResource={() => clickResourceCard(item, true)}
           />
         ))}
       </View>

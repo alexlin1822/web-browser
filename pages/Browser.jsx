@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import { WebView } from "react-native-webview";
 import SearchBar from "../components/search_bar";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import BrowserEditBar from "../components/browser_edit_bar";
 
 import {
   GetCurrentID,
+  SetCurrentID,
   LoadData_local,
   SaveData_local,
   GetStorageKey,
@@ -32,16 +31,52 @@ export default function Browser({ route, navigation }) {
   const focusMemberID = GetCurrentID("focusMemberID");
   const currentResourceID = GetCurrentID("currentResourceID");
 
-  console.log("currentResourceID - Browser: " + currentResourceID);
-  console.log("url 00", url);
+  const urlList = item.url_include.split(",");
+  const titleList = item.title_include.split(",");
+  const whitelistList = item.whitelist.split(",");
 
+  const webViewRef = useRef(null);
+
+  const [timeLeft, setTimeLeft] = useState(parseInt(item.time_limit));
+
+  // Times up function
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+      console.log("timeLeft" + timeLeft.toString());
+    }, 1000 * 60);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  function timesUp() {
+    navigation.navigate("TimesUp");
+  }
+
+  if (timeLeft === 0) {
+    timesUp();
+  }
+
+  console.log("currentResourceID - Browser: " + currentResourceID);
+  console.log("item.last_url: " + url + "   " + item.last_url);
+
+  /**
+   * @description browser_edit_bar submit the new resource profile to here
+   *              and this step save it to local storage
+   * @param {*} newResourceProfile
+   */
   const handleEditSubmit = async (newResourceProfile) => {
     if (newResourceProfile === null) {
+      // Cancel button
+      // Just return to home page
+      SetCurrentID("currentResourceID", "");
       navigation.navigate("Home", { needLoad: false });
     }
 
+    // Clicked submit button
+    // Save resource profile to local storage
+
     console.log("newResourceProfile", newResourceProfile);
-    // setResourceList(newResourceProfile);
 
     let value = await LoadData_local(
       GetStorageKey(currentAccountID, focusMemberID)
@@ -90,19 +125,9 @@ export default function Browser({ route, navigation }) {
         value
       );
     }
+
+    SetCurrentID("currentResourceID", "");
     navigation.navigate("Home", { needLoad: true });
-  };
-
-  const onWebViewLoad = (syntheticEvent) => {
-    const { nativeEvent } = syntheticEvent;
-    const { title, url } = nativeEvent;
-
-    // Extract the favicon URL from the page's HTML
-    const faviconUrl = url + "/favicon.ico";
-
-    setWebTitle(title);
-    setFavicon(faviconUrl);
-    // setUrl(url);
   };
 
   /**
@@ -115,36 +140,78 @@ export default function Browser({ route, navigation }) {
     setUrl(`${searchText}`);
   };
 
-  /**
-   * @description This function is called when the url changes
-   * @param {string} newUrl
-   * @returns {void}
-   */
-  const handleUrlChange = (newUrl) => {
-    setUrl(newUrl["url"]);
-    console.log(`New URL = ${newUrl["url"]}`);
+  const checkWeb = (currentUrl, currentTitle) => {
+    if (currentUrl === item.default_url) {
+      return true;
+    }
+
+    if (item.use_url_include) {
+      //check url
+      for (let i = 0; i < urlList.length; i++) {
+        if (currentUrl.includes(urlList[i])) {
+          return true;
+        }
+      }
+    }
+
+    if (item.use_title_include) {
+      //check title
+      for (let i = 0; i < titleList.length; i++) {
+        if (currentTitle.includes(titleList[i])) {
+          return true;
+        }
+      }
+    }
+
+    if (item.use_whitelist) {
+      //check whitelist
+      for (let i = 0; i < whitelistList.length; i++) {
+        if (currentUrl.includes(whitelistList[i])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  const handleUrlChange = (newNavState) => {
+    const { url, title } = newNavState;
+    if (isEditMode) {
+      setUrl(url);
+      setWebTitle(title);
+    } else {
+      console.log("--------------------");
+      if (!checkWeb(url, title)) {
+        console.log("checkWeb false");
+        console.log(item.default_url);
+        setUrl(item.default_url);
+        console.log(url);
+        webViewRef.current.goBack();
+      }
+    }
   };
 
   return (
     <View style={styles.container}>
       {isEditMode ? (
         <View>
+          <SearchBar onSubmit={handleSubmit} updateURL={url} />
           <BrowserEditBar
             onSubmit={handleEditSubmit}
             resourceList={resourceProfile}
             updateURL={url}
+            updateTitle={webTitle}
           />
-          <SearchBar onSubmit={handleSubmit} updateURL={url} />
         </View>
       ) : (
-        <BrowserViewBar resourceList={resourceProfile} />
+        <BrowserViewBar resourceList={resourceProfile} timeLeft={timeLeft} />
       )}
 
       <WebView
+        ref={webViewRef}
         style={{ marginTop: 10 }}
         source={{ uri: url }}
         onNavigationStateChange={handleUrlChange}
-        onLoad={onWebViewLoad}
       />
       <StatusBar style="auto" />
     </View>
