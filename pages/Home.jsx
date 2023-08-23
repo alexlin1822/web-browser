@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from "react-native";
 import {
   GetCurrentID,
   SetCurrentID,
@@ -32,10 +38,14 @@ export default function Home({ route, navigation }) {
     });
   };
 
+  const clickLogout = () => {
+    navigation.navigate("UserProfile", { needLoad: true });
+  };
+
   useEffect(() => {
     async function fetchData() {
       // For test clear this account profile
-      //await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
+      // await SaveData_local(GetStorageKey(currentAccountID, focusMemberID), "");
 
       try {
         // Pre-load
@@ -75,14 +85,24 @@ export default function Home({ route, navigation }) {
   } else {
     return (
       <View style={styles.container}>
-        {resourceProfile.resourcelist.map((item) => (
-          <ResourceCard
-            key={item.rid}
-            item={item}
-            onSubmitResource={() => clickResourceCard(item, false)}
-            onSubmitLongResource={() => clickResourceCard(item, true)}
-          />
-        ))}
+        <View style={styles.rowView}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={() => clickLogout()}
+          >
+            <Text style={styles.buttonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.container}>
+          {resourceProfile.resourcelist.map((item) => (
+            <ResourceCard
+              key={item.rid}
+              item={item}
+              onSubmitResource={() => clickResourceCard(item, false)}
+              onSubmitLongResource={() => clickResourceCard(item, true)}
+            />
+          ))}
+        </View>
       </View>
     );
   }
@@ -91,8 +111,32 @@ export default function Home({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 5,
+    margin: 5,
+  },
+  rowView: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    padding: 20,
+    alignItems: "center",
+    padding: 2,
+    marginVertical: 10,
+    marginHorizontal: 5,
+  },
+  submitButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
+    height: 50,
+    marginTop: 20,
+    marginBottom: 50,
+  },
+  buttonText: {
+    padding: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
   },
 });

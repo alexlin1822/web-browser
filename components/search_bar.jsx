@@ -1,8 +1,21 @@
 import React, { useState } from "react";
-import { StyleSheet, View, TextInput, Button } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
 
-export default function SearchBar({ onSubmit, updateURL }) {
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+
+export default function SearchBar({
+  onSubmit,
+  updateURL,
+  onGoBack,
+  onGoForward,
+  onReload,
+}) {
   console.log("SearchBar updateURL: " + updateURL);
   const [text, setText] = useState(updateURL);
   const [curURL, setCurURL] = useState(updateURL);
@@ -20,6 +33,17 @@ export default function SearchBar({ onSubmit, updateURL }) {
     onSubmit(tmp);
   };
 
+  const handleGoBack = () => {
+    onGoBack();
+  };
+  const handleGoForward = () => {
+    onGoForward();
+  };
+
+  const handleReload = () => {
+    onReload();
+  };
+
   function addHttps(input) {
     const startsWithHttp = input.startsWith("http://");
     const startsWithHttps = input.startsWith("https://");
@@ -34,18 +58,27 @@ export default function SearchBar({ onSubmit, updateURL }) {
   }
 
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", padding: 10 }}>
-      <Feather name="search" size={16} color="black" />
+    <View style={styles.rowView}>
+      <TouchableOpacity
+        style={styles.touchableOpacity}
+        onPress={() => handleGoBack()}
+      >
+        <AntDesign name="leftsquareo" size={32} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.touchableOpacity}
+        onPress={() => handleGoForward()}
+      >
+        <AntDesign name="rightsquareo" size={32} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.touchableOpacity}
+        onPress={() => handleReload()}
+      >
+        <Feather name="refresh-ccw" size={24} color="black" />
+      </TouchableOpacity>
       <TextInput
-        style={{
-          flex: 1,
-          marginLeft: 10,
-          marginRight: 2,
-          paddingLeft: 10,
-          height: 32,
-          borderColor: "gray",
-          borderWidth: 1,
-        }}
+        style={styles.textInput}
         onChangeText={setText}
         value={text}
         placeholder="Please type the URL here"
@@ -54,3 +87,26 @@ export default function SearchBar({ onSubmit, updateURL }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  rowView: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 5,
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    marginHorizontal: 5,
+    height: 36,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+  },
+  touchableOpacity: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 2,
+    marginVertical: 5,
+  },
+});

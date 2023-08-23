@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
+// import { StatusBar } from "expo-status-bar";
 
 import { WebView } from "react-native-webview";
+
 import SearchBar from "../components/search_bar";
 
 import BrowserEditBar from "../components/browser_edit_bar";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import {
   GetCurrentID,
@@ -23,7 +25,7 @@ export default function Browser({ route, navigation }) {
 
   const [url, setUrl] = useState(item.last_url);
   const [webTitle, setWebTitle] = useState("");
-  const [favicon, setFavicon] = useState("");
+  // const [favicon, setFavicon] = useState("");
 
   const [resourceProfile, setResourceList] = useState(item);
 
@@ -38,12 +40,17 @@ export default function Browser({ route, navigation }) {
   const webViewRef = useRef(null);
 
   const [timeLeft, setTimeLeft] = useState(parseInt(item.time_limit));
+  const [isShowViewMenu, setIsShowViewMenu] = useState(false);
+
+  const customUserAgent =
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/102.0.5005.87 Mobile/15E148 Safari/604.1";
 
   // Times up function
   useEffect(() => {
+    if (isEditMode) return;
+
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => prevTime - 1);
-      console.log("timeLeft" + timeLeft.toString());
     }, 1000 * 60);
 
     return () => clearInterval(timer);
@@ -56,6 +63,8 @@ export default function Browser({ route, navigation }) {
   if (timeLeft === 0) {
     timesUp();
   }
+
+  console.log("timeLeft " + timeLeft.toString());
 
   console.log("currentResourceID - Browser: " + currentResourceID);
   console.log("item.last_url: " + url + "   " + item.last_url);
@@ -75,7 +84,6 @@ export default function Browser({ route, navigation }) {
 
     // Clicked submit button
     // Save resource profile to local storage
-
     console.log("newResourceProfile", newResourceProfile);
 
     let value = await LoadData_local(
@@ -140,6 +148,20 @@ export default function Browser({ route, navigation }) {
     setUrl(`${searchText}`);
   };
 
+  const handleMenuClicked = (type) => {
+    if (type === "GoBack") {
+      webViewRef.current.goBack();
+    } else if (type === "GoForward") {
+      webViewRef.current.goForward();
+    } else if (type === "Reload") {
+      webViewRef.current.reload();
+    } else if (type === "Exit") {
+      navigation.navigate("Home", { needLoad: false });
+    } else if (type === "Hide") {
+      setIsShowViewMenu(false);
+    }
+  };
+
   const checkWeb = (currentUrl, currentTitle) => {
     if (currentUrl === item.default_url) {
       return true;
@@ -191,11 +213,21 @@ export default function Browser({ route, navigation }) {
     }
   };
 
+  const clickHandler = () => {
+    setIsShowViewMenu(!isShowViewMenu);
+  };
+
   return (
     <View style={styles.container}>
       {isEditMode ? (
         <View>
-          <SearchBar onSubmit={handleSubmit} updateURL={url} />
+          <SearchBar
+            onSubmit={handleSubmit}
+            updateURL={url}
+            onGoBack={() => handleMenuClicked("GoBack")}
+            onGoForward={() => handleMenuClicked("GoForward")}
+            onReload={() => handleMenuClicked("Reload")}
+          />
           <BrowserEditBar
             onSubmit={handleEditSubmit}
             resourceList={resourceProfile}
@@ -204,16 +236,49 @@ export default function Browser({ route, navigation }) {
           />
         </View>
       ) : (
-        <BrowserViewBar resourceList={resourceProfile} timeLeft={timeLeft} />
+        isShowViewMenu && (
+          <BrowserViewBar
+            resourceList={resourceProfile}
+            timeLeft={timeLeft}
+            onClick={handleMenuClicked}
+          />
+        )
       )}
 
       <WebView
         ref={webViewRef}
-        style={{ marginTop: 10 }}
+        style={styles.webview}
         source={{ uri: url }}
         onNavigationStateChange={handleUrlChange}
+        javaScriptEnabled={true}
+        userAgent={customUserAgent}
+        sharedCookiesEnabled={true}
       />
-      <StatusBar style="auto" />
+      {/* <StatusBar style="auto" /> */}
+
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={clickHandler}
+        style={styles.touchableOpacityStyle}
+      >
+        {/* <Image
+          //We are making FAB using TouchableOpacity with an image
+          //We are using online image here
+          source={{
+            uri: "https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png",
+          }}
+          //You can use you project image Example below
+          //source={require('./images/float-add-icon.png')}
+          style={styles.floatingButtonStyle}
+        />
+         */}
+
+        <MaterialCommunityIcons
+          name="microsoft-xbox-controller-menu"
+          size={50}
+          color="orange"
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -226,5 +291,25 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 5,
     paddingHorizontal: 5,
+  },
+  webview: {
+    marginTop: 10,
+  },
+  touchableOpacityStyle: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    // left: 10,
+    // top: 90,
+    right: 30,
+    bottom: 30,
+  },
+  floatingButtonStyle: {
+    resizeMode: "contain",
+    width: 50,
+    height: 50,
+    // backgroundColor: "black",
   },
 });

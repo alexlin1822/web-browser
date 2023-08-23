@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import Constants from "expo-constants";
 import {
   CheckUsernameisExist,
   GenerateNewId,
@@ -19,12 +18,15 @@ export default function Signup({ navigation }) {
   const [text_username, setUserName] = useState("");
   const [text_email, setEmail] = useState("");
   const [text_password, setPassword] = useState("");
-  const [accountNums, setAccountNums] = useState(0); //Used to store the number of existing accounts
 
   /**
    * @description This function is called when the user submits the Sign Up form
    */
-  const handleSignup = async () => {
+  const handleSignup = async (message) => {
+    if (message == "Cancel") {
+      navigation.navigate("Login");
+      return;
+    }
     // Check if the user has entered all the required fields
     if (
       text_nickname === "" ||
@@ -117,7 +119,8 @@ export default function Signup({ navigation }) {
         secureTextEntry={true}
       />
 
-      <Button title="Sign Up" onPress={handleSignup} />
+      <Button title="Sign Up" onPress={() => handleSignup("Sign Up")} />
+      <Button title="Cancel" onPress={() => handleSignup("Cancel")} />
     </View>
   );
 }

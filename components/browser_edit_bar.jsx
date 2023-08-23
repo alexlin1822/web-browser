@@ -6,8 +6,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { GenerateNewId } from "../utility/Common";
 
 export default function BrowserEditBar({
@@ -59,6 +58,8 @@ export default function BrowserEditBar({
   const [useWhiteList, setUseWhiteList] = useState(resourceList.use_whitelist);
 
   const [timeLimit, setTimeLimit] = useState(resourceList.time_limit);
+
+  const [iconUrl, setIconUrl] = useState("");
 
   const handleSetValue = (type) => {
     console.log("handleSetValue", type);
@@ -128,7 +129,8 @@ export default function BrowserEditBar({
   };
 
   const getIcon = (url) => {
-    let icon = url + "/favicon.ico";
+    let icon = url + "favicon.ico";
+    // await getFavicons(url);
     return icon;
   };
 
@@ -139,10 +141,11 @@ export default function BrowserEditBar({
   const handleSetDefalut = () => {
     setDefaultUrl(updateURL);
     setWebTitle(updateTitle);
+    console.log(getIcon(updateURL));
   };
 
   return (
-    <View style={{ backgroundColor: "#d4e3fa", paddingVertical: 5 }}>
+    <View style={{ backgroundColor: "#d4e3fa", paddingVertical: 2 }}>
       <View style={styles.rowView}>
         <TouchableOpacity
           style={{ alignItems: "center" }}
@@ -168,26 +171,26 @@ export default function BrowserEditBar({
       <View style={styles.rowView}>
         <Text style={styles.text}> Description </Text>
         <TextInput
-          style={styles.textInput && { flex: 0.45 }}
+          style={[styles.textInput, { flex: 0.45 }]}
           onChangeText={setDescription}
           value={description}
           placeholder="Please type description here"
         />
         <Text style={styles.text}> Memo</Text>
         <TextInput
-          style={styles.textInput && { flex: 0.45 }}
+          style={[styles.textInput, { flex: 0.5 }]}
           onChangeText={setMemo}
           value={memo}
           placeholder="Please type memo here"
         />
         <Text style={styles.text}> Time Limit</Text>
         <TextInput
-          style={styles.textInput && { flex: 0.05 }}
+          style={[styles.textInput, { flex: 0.05 }]}
           onChangeText={setTimeLimit}
           value={timeLimit}
           placeholder=""
         />
-        <Text style={styles.text}>min</Text>
+        <Text style={[styles.text, { marginLeft: 0 }]}>min</Text>
       </View>
 
       <View style={styles.rowView}>
@@ -286,33 +289,22 @@ export default function BrowserEditBar({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  tableRow: {
+  rowView: {
     flexDirection: "row",
-    marginBottom: 5,
-  },
-  imageButton: {
-    width: 48,
-    height: 48,
-    resizeMode: "contain",
+    alignItems: "center",
+    padding: 2,
   },
   submitButton: {
-    marginHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 100,
     paddingHorizontal: 10,
     backgroundColor: "blue",
     borderRadius: 5,
-    marginLeft: 10,
-    height: 40,
+    height: 50,
     flex: 0.5,
   },
   buttonText: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
     fontSize: 18,
     fontWeight: "bold",
     color: "white",
@@ -320,11 +312,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 12,
     fontWeight: "bold",
-    marginHorizontal: 10,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 10,
+    marginLeft: 10,
   },
   optionButton: {
     alignItems: "center",
@@ -332,9 +320,9 @@ const styles = StyleSheet.create({
     width: 120,
     backgroundColor: "grey",
     padding: 10,
-    margin: 5,
+    marginHorizontal: 5,
+    marginVertical: 2,
     borderRadius: 5,
-    marginLeft: 10,
   },
   optionButtonSelected: {
     backgroundColor: "green",
@@ -351,10 +339,9 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     fontSize: 16,
-    marginLeft: 10,
-    marginRight: 2,
+    marginLeft: 2,
     paddingLeft: 10,
-    height: 32,
+    height: 36,
     borderColor: "gray",
     borderWidth: 1,
   },

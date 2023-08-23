@@ -1,50 +1,40 @@
-import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Button,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
 export default function PeopleCard({
-  mid,
-  title,
-  description,
-  icon,
-  memo,
-  status,
-  onSubmit,
+  item,
+  onSubmitResource,
+  onSubmitLongResource,
 }) {
-  const strIcon = icon.toString();
+  const strIcon = item.icon.toString();
+
+  console.log("People card here" + JSON.stringify(item));
+
   const handleClick = () => {
-    // let param = {
-    //   key: mid,
-    //   mid: mid,
-    //   title: title,
-    //   icon: icon,
-    //   description: description,
-    //   memo: memo,
-    //   status: status,
-    // };
-    console.log("People card Clicked: " + JSON.stringify(mid));
-    onSubmit(mid);
+    console.log("People card Clicked: " + JSON.stringify(item));
+    onSubmitResource(item);
   };
-  // source={require("../assets/favicon.png")}
+
+  const handleLongClick = () => {
+    onSubmitLongResource(item);
+  };
+
   return (
-    <View style={styles.card} key={mid}>
-      <TouchableOpacity style={styles.button} onPress={handleClick}>
+    <View style={styles.card} key={item.key}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleClick}
+        onLongPress={handleLongClick}
+      >
         {strIcon.startsWith("http") ? (
-          <Image source={{ uri: icon }} style={styles.image} />
+          <Image source={{ uri: item.icon }} style={styles.image} />
         ) : (
           <Image
             source={require("../assets/favicon.png")}
             style={styles.image}
           />
         )}
-        <Text style={styles.text}>{title}</Text>
-        <Text style={{ color: "blue" }}>{description}</Text>
+        <Text style={styles.text}>{item.title}</Text>
+        <Text style={{ color: "blue" }}>{item.description}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,8 +61,8 @@ const styles = StyleSheet.create({
     margin: 3,
   },
   image: {
-    width: 64,
-    height: 64,
+    width: 128,
+    height: 128,
   },
   text: {
     fontWeight: "bold",
