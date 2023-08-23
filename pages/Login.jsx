@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { GetAccountID, SetCurrentID, GetCurrentID } from "../utility/Common";
 
@@ -6,7 +6,20 @@ export default function Login({ navigation }) {
   const [userName, setuserName] = useState("");
   const [password, setPassword] = useState("");
 
+  // const hasUnsavedChanges = true;
+
   const handleLogin = async () => {
+    // Effect
+    // useEffect(() => {
+    //   navigation.addListener("beforeRemove", (e) => {
+    //     console.log("onback1");
+    //     e.preventDefault();
+    //     console.log("onback2");
+    //     // Do your stuff here
+    //     // navigation.dispatch(e.data.action);
+    //   });
+    // }, []);
+
     // Simulating a login check (you should replace this with your actual authentication logic)
     let resultID = await GetAccountID(userName, password);
     console.log("resultID: " + resultID);
@@ -16,12 +29,8 @@ export default function Login({ navigation }) {
       console.log(
         "currentAccountID - Login page: " + GetCurrentID("currentAccountID")
       );
+
       navigation.navigate("UserProfile", { needLoad: true });
-
-      // setShowNavigationBar(false);
-      // console.log(getShowNavigationBar());
-
-      // navigation.navigate("Home");
     } else {
       alert("Invalid credentials. Please try again.");
     }

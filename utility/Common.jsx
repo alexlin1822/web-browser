@@ -2,32 +2,28 @@
  * Common functions for all pages and components
  * Global variables for all pages and components
  * Save and load data in Storage
- *
- * @module utility/Common
- * @requires react
- * @requires react-native
- *
  */
-import React, { useState } from "react";
-import CryptoJS from "crypto-js";
-// import Storage from "@react-native-async-storage/async-storage";
-// import { Storage } from "expo-storage";
+import * as Crypto from "expo-crypto";
 import * as SecureStore from "expo-secure-store";
-// import { getRandomValues } from "react-native-get-random-values";
 
 /* Global variables */
 // App settings
-// const appName = "@KidWebBrowser";
 const appName = "KidWebBrowser";
 
-// const [showNavigationBar, set_ShowNavigationBar] = useState(true);
-// let showNavigationBar = true;
-
 // Account data
-
 let currentAccountID = ""; // Current account ID
 let focusMemberID = ""; // focus member ID in current account ID
 let currentResourceID = ""; // Current Resource ID
+
+let timeLeft = 0; // Time left for current resource
+
+export function setTimeLeft(value) {
+  timeLeft = value;
+}
+
+export function getTimeLeft() {
+  return timeLeft;
+}
 
 /* Common functions for all pages and components*/
 
@@ -80,18 +76,6 @@ export async function LoadData_local(keyname) {
  * @returns : string
  */
 export function GetStorageKey(accountID = "", memberID = "", resourceID = "") {
-  // if (accountID === "" && memberID === "" && resourceID === "") {
-  //   //In the remote version, the account list is stored in the server
-  //   return appName + ":" + "accountList"; // Acount List storage Key (just for local version)
-  // } else if (accountID != "" && memberID === "" && resourceID === "") {
-  //   return appName + ":" + accountID; // Account storage data Key
-  // } else if (accountID != "" && memberID != "" && resourceID === "") {
-  //   return appName + ":" + accountID + "-" + memberID; // Member data
-  // } else if (accountID != "" && memberID != "" && resourceID != "") {
-  //   return appName + ":" + accountID + "-" + memberID + "-" + resourceID; // Resource data
-  // } else {
-  //   return "";
-  // }
   if (accountID === "" && memberID === "" && resourceID === "") {
     //In the remote version, the account list is stored in the server
     return appName + "." + "accountList"; // Acount List storage Key (just for local version)
@@ -165,24 +149,13 @@ export async function GetAccountID(username, password) {
  * @returns {string} random string
  */
 export function GenerateNewId(idType) {
+  const UUID = Crypto.randomUUID();
   if (idType === "account") {
-    return (
-      Math.random().toString(36).slice(2, 11) +
-      "-a-" +
-      Math.random().toString(36).slice(2, 10)
-    );
+    return "a-" + UUID;
   } else if (idType === "member") {
-    return (
-      Math.random().toString(36).slice(2, 6) +
-      "-m-" +
-      Math.random().toString(36).slice(2, 4)
-    );
+    return "m-" + UUID;
   } else if (idType === "resource") {
-    return (
-      Math.random().toString(36).slice(2, 9) +
-      "-r-" +
-      Math.random().toString(36).slice(2, 6)
-    );
+    return "r-" + UUID;
   } else {
     return "";
   }
